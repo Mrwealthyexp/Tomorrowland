@@ -483,7 +483,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   </section>
 </main>
 
-<footer data-app-content>
+<footer>
   <div class="footer-content">
     <div class="footer-logo">Blackpower.tomorrowland</div>
     <p>Prototype cultural infrastructure for archiving memory and rehearsing liberated futures.</p>
@@ -586,32 +586,75 @@ function renderBooks() {
     return matchesFilter && haystack.includes(query);
   });
 
+  bookGrid.replaceChildren();
+
   if (!filtered.length) {
-    bookGrid.innerHTML = '<div class="empty-state">No books matched that search yet. Try another keyword or filter.</div>';
+    const emptyState = document.createElement('div');
+    emptyState.className = 'empty-state';
+    emptyState.textContent = 'No books matched that search yet. Try another keyword or filter.';
+    bookGrid.appendChild(emptyState);
     return;
   }
 
-  bookGrid.innerHTML = filtered.map((book) => `
-    <article class="book-card">
-      <div class="book-cover">
-        <div class="book-cover-bg" style="background:${book.palette}"></div>
-        <div class="book-cover-content">
-          <h4>${book.title}</h4>
-          <div class="author-name">${book.author}</div>
-        </div>
-      </div>
-      <div class="book-info">
-        <div class="book-meta">
-          ${book.tags.map((tag) => `<span class="book-tag">${tag}</span>`).join('')}
-        </div>
-        <p class="book-desc">${book.description}</p>
-        <div class="book-actions">
-          <button class="btn-small btn-download" type="button">⬇ Download</button>
-          <button class="btn-small btn-preview" type="button" data-preview-id="${book.id}">Preview</button>
-        </div>
-      </div>
-    </article>
-  `).join('');
+  filtered.forEach((book) => {
+    const card = document.createElement('article');
+    card.className = 'book-card';
+
+    const cover = document.createElement('div');
+    cover.className = 'book-cover';
+
+    const coverBackground = document.createElement('div');
+    coverBackground.className = 'book-cover-bg';
+    coverBackground.style.background = book.palette;
+
+    const coverContent = document.createElement('div');
+    coverContent.className = 'book-cover-content';
+
+    const title = document.createElement('h4');
+    title.textContent = book.title;
+
+    const authorName = document.createElement('div');
+    authorName.className = 'author-name';
+    authorName.textContent = book.author;
+
+    coverContent.append(title, authorName);
+    cover.append(coverBackground, coverContent);
+
+    const info = document.createElement('div');
+    info.className = 'book-info';
+
+    const meta = document.createElement('div');
+    meta.className = 'book-meta';
+    book.tags.forEach((tag) => {
+      const badge = document.createElement('span');
+      badge.className = 'book-tag';
+      badge.textContent = tag;
+      meta.appendChild(badge);
+    });
+
+    const description = document.createElement('p');
+    description.className = 'book-desc';
+    description.textContent = book.description;
+
+    const actions = document.createElement('div');
+    actions.className = 'book-actions';
+
+    const downloadButton = document.createElement('button');
+    downloadButton.className = 'btn-small btn-download';
+    downloadButton.type = 'button';
+    downloadButton.textContent = '⬇ Download';
+
+    const previewButton = document.createElement('button');
+    previewButton.className = 'btn-small btn-preview';
+    previewButton.type = 'button';
+    previewButton.dataset.previewId = book.id;
+    previewButton.textContent = 'Preview';
+
+    actions.append(downloadButton, previewButton);
+    info.append(meta, description, actions);
+    card.append(cover, info);
+    bookGrid.appendChild(card);
+  });
 }
 
 function getFocusableElements(modal) {
