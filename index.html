@@ -739,8 +739,10 @@ function openModal(modal) {
   overlay.classList.add('active');
   overlay.setAttribute('aria-hidden', 'false');
   setBackgroundInteractivity(true);
-  const firstFocusable = getFocusableElements(dialog)[0] || dialog;
-  if (firstFocusable) firstFocusable.focus();
+  requestAnimationFrame(() => {
+    const firstFocusable = getFocusableElements(dialog)[0] || dialog;
+    if (firstFocusable) firstFocusable.focus();
+  });
 }
 
 function closeModal(modal, options = {}) {
