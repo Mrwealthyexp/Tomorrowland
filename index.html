@@ -498,8 +498,8 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
 </footer>
 </div>
 
-<div class="modal-overlay" id="wallet-modal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wallet-title" tabindex="-1">
+<div class="modal-overlay" id="wallet-modal" role="dialog" aria-modal="true" aria-labelledby="wallet-title" aria-hidden="true" tabindex="-1">
+  <div class="modal">
     <button class="modal-close" type="button" data-close-modal>&times;</button>
     <h3 id="wallet-title">Connect a wallet</h3>
     <p>Select a provider to simulate how members might join the registry in a future integrated version.</p>
@@ -511,8 +511,8 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   </div>
 </div>
 
-<div class="modal-overlay book-preview-modal" id="book-preview-modal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="preview-title" tabindex="-1">
+<div class="modal-overlay book-preview-modal" id="book-preview-modal" role="dialog" aria-modal="true" aria-labelledby="preview-title" aria-hidden="true" tabindex="-1">
+  <div class="modal">
     <button class="modal-close" type="button" data-close-modal>&times;</button>
     <div id="book-preview-content"></div>
   </div>
@@ -665,25 +665,59 @@ function getFocusableElements(modal) {
     });
 }
 
+function setBackgroundInteractivity(disabled) {
+  const supportsInert = 'inert' in HTMLElement.prototype;
+  const focusableSelector = 'a[href],button,input,select,textarea,[tabindex]';
+
+  if (supportsInert) {
+    appContent.inert = disabled;
+  } else {
+    appContent.style.pointerEvents = disabled ? 'none' : '';
+    appContent.querySelectorAll(focusableSelector).forEach((element) => {
+      if (disabled) {
+        element.dataset.prevTabindex = element.getAttribute('tabindex') ?? '';
+        element.setAttribute('tabindex', '-1');
+      } else if ('prevTabindex' in element.dataset) {
+        if (element.dataset.prevTabindex) {
+          element.setAttribute('tabindex', element.dataset.prevTabindex);
+        } else {
+          element.removeAttribute('tabindex');
+        }
+        delete element.dataset.prevTabindex;
+      }
+    });
+  }
+
+  if (disabled) {
+    appContent.setAttribute('aria-hidden', 'true');
+  } else {
+    appContent.removeAttribute('aria-hidden');
+  }
+}
+
 function openModal(modal) {
-  if (activeModal && activeModal !== modal) return;
-  lastFocusedElement = document.activeElement;
+  const focusOrigin = activeModal ? lastFocusedElement : document.activeElement;
+
+  if (activeModal && activeModal !== modal) {
+    closeModal(activeModal, { restoreFocus: false });
+  }
+
+  lastFocusedElement = focusOrigin;
   activeModal = modal;
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
-  appContent.inert = true;
-  appContent.setAttribute('aria-hidden', 'true');
-  const firstFocusable = getFocusableElements(modal)[0] || modal.querySelector('.modal');
+  setBackgroundInteractivity(true);
+  const firstFocusable = getFocusableElements(modal)[0] || modal;
   if (firstFocusable) firstFocusable.focus();
 }
 
-function closeModal(modal) {
+function closeModal(modal, options = {}) {
+  const { restoreFocus = true } = options;
   modal.classList.remove('active');
   modal.setAttribute('aria-hidden', 'true');
   activeModal = null;
-  appContent.inert = false;
-  appContent.removeAttribute('aria-hidden');
-  if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
+  setBackgroundInteractivity(false);
+  if (restoreFocus && lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
 }
 
 function showPreview(bookId) {
