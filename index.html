@@ -738,11 +738,15 @@ function closeModal(modal, options = {}) {
   }
 
   if (restoreFocus && lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
+  if (restoreFocus) lastFocusedElement = null;
 }
 
 function showPreview(bookId) {
   const book = books.find((entry) => entry.id === bookId);
   if (!book) return;
+
+  const previewDialog = previewModal.querySelector('.modal');
+  previewDialog.setAttribute('aria-labelledby', 'preview-title');
 
   previewContent.replaceChildren();
 
