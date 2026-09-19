@@ -231,7 +231,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
 </head>
 <body>
 <div class="grid-bg" aria-hidden="true"></div>
-<header class="navbar">
+<header class="navbar" data-app-content>
   <a href="#top" class="logo">Blackpower<span>.tomorrowland</span></a>
   <button class="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">☰</button>
   <ul class="nav-links" id="nav-links">
@@ -244,7 +244,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   <button class="wallet-btn" type="button" data-open-modal="wallet-modal">Connect Wallet</button>
 </header>
 
-<main id="top">
+<main id="top" data-app-content>
   <section class="hero">
     <div class="collage-container" aria-hidden="true">
       <div class="collage-img" style="top:12%;left:8%;width:180px;height:220px;">Legacy</div>
@@ -374,7 +374,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
         <label class="sr-only" for="book-search">Search books</label>
         <input id="book-search" type="search" placeholder="Search by title, author or topic" />
       </div>
-      <div class="filter-tags" role="tablist" aria-label="Book filters">
+      <div class="filter-tags" role="group" aria-label="Book filters">
         <button class="filter-tag active" type="button" data-filter="all">All</button>
         <button class="filter-tag" type="button" data-filter="history">History</button>
         <button class="filter-tag" type="button" data-filter="economics">Economics</button>
@@ -454,7 +454,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
     </div>
   </section>
 
-  <section class="admin-section active" id="admin">
+  <section class="admin-section" id="admin">
     <div class="admin-header">
       <h2>Admin Command</h2>
       <p>Illustrative operations view for curators and project operators.</p>
@@ -482,7 +482,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   </section>
 </main>
 
-<footer>
+<footer data-app-content>
   <div class="footer-content">
     <div class="footer-logo">Blackpower.tomorrowland</div>
     <p>Prototype cultural infrastructure for archiving memory and rehearsing liberated futures.</p>
@@ -571,7 +571,10 @@ const previewModal = document.getElementById('book-preview-modal');
 const previewContent = document.getElementById('book-preview-content');
 const mobileMenuButton = document.querySelector('.mobile-menu-btn');
 const navLinks = document.getElementById('nav-links');
+const appContent = Array.from(document.querySelectorAll('[data-app-content]'));
 let activeFilter = 'all';
+let activeModal = null;
+let lastFocusedElement = null;
 
 function renderBooks() {
   const query = bookSearch.value.trim().toLowerCase();
@@ -609,36 +612,92 @@ function renderBooks() {
   `).join('');
 }
 
+function getFocusableElements(modal) {
+  return Array.from(modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'))
+    .filter((element) => !element.disabled && !element.getAttribute('aria-hidden'));
+}
+
 function openModal(modal) {
+  lastFocusedElement = document.activeElement;
+  activeModal = modal;
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
+  appContent.forEach((element) => {
+    element.inert = true;
+    element.setAttribute('aria-hidden', 'true');
+  });
+  const firstFocusable = getFocusableElements(modal)[0] || modal.querySelector('.modal');
+  if (firstFocusable) firstFocusable.focus();
 }
 
 function closeModal(modal) {
   modal.classList.remove('active');
   modal.setAttribute('aria-hidden', 'true');
+  activeModal = null;
+  appContent.forEach((element) => {
+    element.inert = false;
+    element.removeAttribute('aria-hidden');
+  });
+  if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
 }
 
 function showPreview(bookId) {
   const book = books.find((entry) => entry.id === bookId);
   if (!book) return;
-  previewContent.innerHTML = `
-    <div class="preview-header">
-      <div class="preview-cover" style="background:${book.palette}"><span>${book.title.charAt(0)}</span></div>
-      <div class="preview-info">
-        <h4 id="preview-title">${book.title}</h4>
-        <div class="author">${book.author}</div>
-        <div class="year">First published ${book.year}</div>
-      </div>
-    </div>
-    <div class="preview-body">
-      <p>${book.description}</p>
-      <p>This preview is a lightweight content mock designed to demonstrate how the reading archive can surface metadata, summaries and study entry points.</p>
-      <ul class="chapter-list">
-        ${book.chapters.map((chapter, chapterIndex) => `<li>${chapter}<span>Chapter ${chapterIndex + 1}</span></li>`).join('')}
-      </ul>
-    </div>
-  `;
+
+  previewContent.replaceChildren();
+
+  const header = document.createElement('div');
+  header.className = 'preview-header';
+
+  const cover = document.createElement('div');
+  cover.className = 'preview-cover';
+  cover.style.background = book.palette;
+
+  const coverInitial = document.createElement('span');
+  coverInitial.textContent = book.title.charAt(0);
+  cover.appendChild(coverInitial);
+
+  const info = document.createElement('div');
+  info.className = 'preview-info';
+
+  const title = document.createElement('h4');
+  title.id = 'preview-title';
+  title.textContent = book.title;
+
+  const author = document.createElement('div');
+  author.className = 'author';
+  author.textContent = book.author;
+
+  const year = document.createElement('div');
+  year.className = 'year';
+  year.textContent = `First published ${book.year}`;
+
+  info.append(title, author, year);
+  header.append(cover, info);
+
+  const body = document.createElement('div');
+  body.className = 'preview-body';
+
+  const description = document.createElement('p');
+  description.textContent = book.description;
+
+  const note = document.createElement('p');
+  note.textContent = 'This preview is a lightweight content mock designed to demonstrate how the reading archive can surface metadata, summaries and study entry points.';
+
+  const chapters = document.createElement('ul');
+  chapters.className = 'chapter-list';
+  book.chapters.forEach((chapter, chapterIndex) => {
+    const item = document.createElement('li');
+    item.append(document.createTextNode(chapter));
+    const label = document.createElement('span');
+    label.textContent = `Chapter ${chapterIndex + 1}`;
+    item.appendChild(label);
+    chapters.appendChild(item);
+  });
+
+  body.append(description, note, chapters);
+  previewContent.append(header, body);
   openModal(previewModal);
 }
 
@@ -676,6 +735,21 @@ document.querySelectorAll('.modal-overlay').forEach((overlay) => {
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.active').forEach(closeModal);
+  }
+
+  if (event.key === 'Tab' && activeModal) {
+    const focusable = getFocusableElements(activeModal);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 });
 
