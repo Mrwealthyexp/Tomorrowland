@@ -245,7 +245,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   <button class="wallet-btn" type="button" data-open-modal="wallet-modal">Connect Wallet</button>
 </header>
 
-<main id="top" data-app-content>
+<main id="top">
   <section class="hero">
     <div class="collage-container" aria-hidden="true">
       <div class="collage-img" style="top:12%;left:8%;width:180px;height:220px;">Legacy</div>
@@ -623,6 +623,7 @@ function getFocusableElements(modal) {
 }
 
 function openModal(modal) {
+  if (activeModal && activeModal !== modal) return;
   lastFocusedElement = document.activeElement;
   activeModal = modal;
   modal.classList.add('active');
