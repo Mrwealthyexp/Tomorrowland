@@ -585,6 +585,7 @@ const backgroundRegions = Array.from(appContent.children);
 let activeFilter = 'all';
 let activeModal = null;
 let activeOverlay = null;
+let activeOriginRegion = null;
 let lastFocusedElement = null;
 
 function renderBooks() {
@@ -707,7 +708,7 @@ function setBackgroundInteractivity(disabled) {
     }
 
     if (!supportsInert) {
-      if (disabled) {
+      if (disabled && region !== activeOriginRegion) {
         region.setAttribute('aria-hidden', 'true');
       } else {
         region.removeAttribute('aria-hidden');
@@ -722,6 +723,7 @@ function openModal(modal) {
   if (!overlay || !dialog) return;
 
   const focusOrigin = document.activeElement;
+  activeOriginRegion = backgroundRegions.find((region) => region.contains(focusOrigin)) || null;
 
   if (activeOverlay && activeOverlay !== overlay) {
     closeModal(activeOverlay, { restoreFocus: false, preserveBackground: true });
@@ -756,6 +758,7 @@ function closeModal(modal, options = {}) {
 
   if (restoreFocus && lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
   if (restoreFocus) lastFocusedElement = null;
+  activeOriginRegion = null;
 }
 
 function showPreview(bookId) {
@@ -849,6 +852,14 @@ document.querySelectorAll('[data-close-modal]').forEach((button) => {
 document.addEventListener('click', (event) => {
   const disabledAction = event.target.closest('[aria-disabled="true"]');
   if (!disabledAction) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+}, true);
+
+document.addEventListener('keydown', (event) => {
+  const disabledAction = event.target.closest('[aria-disabled="true"]');
+  if (!disabledAction || (event.key !== 'Enter' && event.key !== ' ')) return;
 
   event.preventDefault();
   event.stopImmediatePropagation();
