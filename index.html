@@ -231,7 +231,8 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
 </head>
 <body>
 <div class="grid-bg" aria-hidden="true"></div>
-<header class="navbar" data-app-content>
+<div id="page-shell" data-app-content>
+<header class="navbar">
   <a href="#top" class="logo">Blackpower<span>.tomorrowland</span></a>
   <button class="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">☰</button>
   <ul class="nav-links" id="nav-links">
@@ -495,9 +496,10 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
     <div class="footer-bottom">© 2026 Tomorrowland. Built as a concept experience for community stewardship.</div>
   </div>
 </footer>
+</div>
 
 <div class="modal-overlay" id="wallet-modal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wallet-title">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wallet-title" tabindex="-1">
     <button class="modal-close" type="button" data-close-modal>&times;</button>
     <h3 id="wallet-title">Connect a wallet</h3>
     <p>Select a provider to simulate how members might join the registry in a future integrated version.</p>
@@ -510,7 +512,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
 </div>
 
 <div class="modal-overlay book-preview-modal" id="book-preview-modal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="preview-title" tabindex="-1">
     <button class="modal-close" type="button" data-close-modal>&times;</button>
     <div id="book-preview-content"></div>
   </div>
@@ -571,7 +573,7 @@ const previewModal = document.getElementById('book-preview-modal');
 const previewContent = document.getElementById('book-preview-content');
 const mobileMenuButton = document.querySelector('.mobile-menu-btn');
 const navLinks = document.getElementById('nav-links');
-const appContent = Array.from(document.querySelectorAll('[data-app-content]'));
+const appContent = document.querySelector('[data-app-content]');
 let activeFilter = 'all';
 let activeModal = null;
 let lastFocusedElement = null;
@@ -614,7 +616,10 @@ function renderBooks() {
 
 function getFocusableElements(modal) {
   return Array.from(modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'))
-    .filter((element) => !element.disabled && !element.getAttribute('aria-hidden'));
+    .filter((element) => {
+      if (element.disabled || element.getAttribute('aria-hidden') === 'true') return false;
+      return element.getClientRects().length > 0;
+    });
 }
 
 function openModal(modal) {
@@ -622,10 +627,8 @@ function openModal(modal) {
   activeModal = modal;
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
-  appContent.forEach((element) => {
-    element.inert = true;
-    element.setAttribute('aria-hidden', 'true');
-  });
+  appContent.inert = true;
+  appContent.setAttribute('aria-hidden', 'true');
   const firstFocusable = getFocusableElements(modal)[0] || modal.querySelector('.modal');
   if (firstFocusable) firstFocusable.focus();
 }
@@ -634,10 +637,8 @@ function closeModal(modal) {
   modal.classList.remove('active');
   modal.setAttribute('aria-hidden', 'true');
   activeModal = null;
-  appContent.forEach((element) => {
-    element.inert = false;
-    element.removeAttribute('aria-hidden');
-  });
+  appContent.inert = false;
+  appContent.removeAttribute('aria-hidden');
   if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
 }
 
