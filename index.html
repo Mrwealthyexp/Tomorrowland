@@ -397,13 +397,13 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
         <div class="guide-meta"><span>Starter Kit</span><span>12 pages</span></div>
         <h3>Black Cooperative Economics 101</h3>
         <p>A practical overview of rotating savings, cooperatives and community ownership models.</p>
-        <button class="guide-download-btn" type="button" aria-disabled="true" data-disabled-action="guide-download" aria-describedby="guide-download-note">Download brief</button>
+        <button class="guide-download-btn" type="button" aria-disabled="true" data-disabled-action="guide-download" aria-label="Download brief unavailable until the prototype guide is published">Download brief</button>
       </article>
       <article class="guide-card">
         <div class="guide-meta"><span>Facilitator Guide</span><span>8 pages</span></div>
         <h3>Reading Circle Blueprint</h3>
         <p>Prompts, cadence and reflection activities for collective study sessions.</p>
-        <button class="guide-download-btn" type="button" aria-disabled="true" data-disabled-action="guide-download" aria-describedby="guide-download-note">Download brief</button>
+        <button class="guide-download-btn" type="button" aria-disabled="true" data-disabled-action="guide-download" aria-label="Download brief unavailable until the prototype guide is published">Download brief</button>
       </article>
     </div>
     <p class="section-note" id="guide-download-note">Guide downloads will activate once the prototype briefs are published.</p>
@@ -414,8 +414,8 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
       <div class="treasury-amount">$248,000</div>
       <div class="treasury-label">Illustrative community treasury</div>
       <div class="donate-options">
-        <button class="donate-btn" type="button" aria-disabled="true" data-disabled-action="treasury-action" aria-describedby="treasury-action-note">Sponsor a shelf</button>
-        <button class="donate-btn gold" type="button" aria-disabled="true" data-disabled-action="treasury-action" aria-describedby="treasury-action-note">Fund a fellowship</button>
+        <button class="donate-btn" type="button" aria-disabled="true" data-disabled-action="treasury-action" aria-label="Treasury contribution action unavailable until contribution flows are implemented">Sponsor a shelf</button>
+        <button class="donate-btn gold" type="button" aria-disabled="true" data-disabled-action="treasury-action" aria-label="Treasury contribution action unavailable until contribution flows are implemented">Fund a fellowship</button>
       </div>
       <p class="section-note" id="treasury-action-note">Treasury actions remain disabled until contribution flows are implemented.</p>
     </div>
@@ -653,7 +653,7 @@ function renderBooks() {
     downloadButton.type = 'button';
     downloadButton.setAttribute('aria-disabled', 'true');
     downloadButton.dataset.disabledAction = 'book-download';
-    downloadButton.setAttribute('aria-describedby', 'book-download-note');
+    downloadButton.setAttribute('aria-label', 'Download unavailable until a source file is attached');
     downloadButton.textContent = '⬇ Download';
 
     const previewButton = document.createElement('button');
@@ -706,7 +706,7 @@ function setBackgroundInteractivity(disabled) {
     }
 
     if (!supportsInert) {
-      if (disabled) {
+      if (disabled && !region.contains(document.activeElement)) {
         region.setAttribute('aria-hidden', 'true');
       } else {
         region.removeAttribute('aria-hidden');
