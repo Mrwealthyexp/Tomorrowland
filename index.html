@@ -685,7 +685,7 @@ function getFocusableElements(modal) {
 
 function setBackgroundInteractivity(disabled) {
   const supportsInert = 'inert' in HTMLElement.prototype;
-  const focusableSelector = 'a[href],button:not([disabled]):not([aria-disabled="true"]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"]):not([aria-disabled="true"])';
+  const focusableSelector = 'a[href],button:not([disabled]):not([aria-disabled="true"]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[contenteditable], [tabindex]:not([tabindex="-1"]):not([aria-disabled="true"])';
 
   backgroundRegions.forEach((region) => {
     if (supportsInert) {
@@ -774,7 +774,6 @@ function showPreview(bookId) {
   if (!book) return;
 
   const previewDialog = previewModal.querySelector('.modal');
-  previewDialog.setAttribute('aria-labelledby', 'preview-title');
 
   previewContent.replaceChildren();
 
@@ -829,6 +828,7 @@ function showPreview(bookId) {
 
   body.append(description, note, chapters);
   previewContent.append(header, body);
+  previewDialog.setAttribute('aria-labelledby', 'preview-title');
   openModal(previewModal);
 }
 
