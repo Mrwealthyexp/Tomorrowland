@@ -232,6 +232,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
 </head>
 <body>
 <div class="grid-bg" aria-hidden="true"></div>
+<div id="top"></div>
 <div id="page-shell" data-app-content>
 <header class="navbar">
   <a href="#top" class="logo">Blackpower<span>.tomorrowland</span></a>
@@ -246,7 +247,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   <button class="wallet-btn" type="button" data-open-modal="wallet-modal">Connect Wallet</button>
 </header>
 
-<main id="top">
+<main>
   <section class="hero">
     <div class="collage-container" aria-hidden="true">
       <div class="collage-img" style="top:12%;left:8%;width:180px;height:220px;">Legacy</div>
@@ -836,8 +837,8 @@ document.querySelectorAll('.modal-overlay').forEach((overlay) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.active').forEach(closeModal);
+  if (event.key === 'Escape' && activeOverlay) {
+    closeModal(activeOverlay);
   }
 
   if (event.key === 'Tab' && activeModal) {
