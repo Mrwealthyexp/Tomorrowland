@@ -46,6 +46,7 @@ button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 section{position:relative;z-index:1;padding:6rem 2rem}
 .section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,3rem);text-align:center;margin-bottom:1rem;color:var(--gold);text-transform:uppercase;letter-spacing:3px}
 .section-subtitle{text-align:center;opacity:.7;margin-bottom:4rem;font-size:1.1rem}
+.section-note{text-align:center;opacity:.65;font-size:.85rem;margin-top:1rem}
 
 .pioneer-wall{background:linear-gradient(180deg,var(--black) 0%,var(--rich-black) 100%)}
 .pioneer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;max-width:1400px;margin:0 auto}
@@ -385,6 +386,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
       </div>
     </div>
     <div class="book-grid" id="book-grid"></div>
+    <p class="section-note" id="book-download-note">Book download buttons are disabled in this prototype until source files are attached.</p>
 
     <div class="academy-header" style="margin-top:5rem;">
       <h3 class="section-title" style="font-size:clamp(1.4rem,3vw,2rem);">Downloadable Guides</h3>
@@ -395,15 +397,16 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
         <div class="guide-meta"><span>Starter Kit</span><span>12 pages</span></div>
         <h3>Black Cooperative Economics 101</h3>
         <p>A practical overview of rotating savings, cooperatives and community ownership models.</p>
-        <button class="guide-download-btn" type="button" disabled>Download brief</button>
+        <button class="guide-download-btn" type="button" disabled aria-describedby="guide-download-note">Download brief</button>
       </article>
       <article class="guide-card">
         <div class="guide-meta"><span>Facilitator Guide</span><span>8 pages</span></div>
         <h3>Reading Circle Blueprint</h3>
         <p>Prompts, cadence and reflection activities for collective study sessions.</p>
-        <button class="guide-download-btn" type="button" disabled>Download brief</button>
+        <button class="guide-download-btn" type="button" disabled aria-describedby="guide-download-note">Download brief</button>
       </article>
     </div>
+    <p class="section-note" id="guide-download-note">Guide downloads will activate once the prototype briefs are published.</p>
 
     <div class="treasury-panel">
       <h3>Treasury Commons</h3>
@@ -411,9 +414,10 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
       <div class="treasury-amount">$248,000</div>
       <div class="treasury-label">Illustrative community treasury</div>
       <div class="donate-options">
-        <button class="donate-btn" type="button" disabled>Sponsor a shelf</button>
-        <button class="donate-btn gold" type="button" disabled>Fund a fellowship</button>
+        <button class="donate-btn" type="button" disabled aria-describedby="treasury-action-note">Sponsor a shelf</button>
+        <button class="donate-btn gold" type="button" disabled aria-describedby="treasury-action-note">Fund a fellowship</button>
       </div>
+      <p class="section-note" id="treasury-action-note">Treasury actions remain disabled until contribution flows are implemented.</p>
     </div>
   </section>
 
@@ -577,6 +581,7 @@ const previewContent = document.getElementById('book-preview-content');
 const mobileMenuButton = document.querySelector('.mobile-menu-btn');
 const navLinks = document.getElementById('nav-links');
 const appContent = document.querySelector('[data-app-content]');
+const backgroundRegions = Array.from(appContent.children);
 let activeFilter = 'all';
 let activeModal = null;
 let activeOverlay = null;
@@ -647,6 +652,7 @@ function renderBooks() {
     downloadButton.className = 'btn-small btn-download';
     downloadButton.type = 'button';
     downloadButton.disabled = true;
+    downloadButton.setAttribute('aria-describedby', 'book-download-note');
     downloadButton.textContent = '⬇ Download';
 
     const previewButton = document.createElement('button');
@@ -672,32 +678,38 @@ function getFocusableElements(modal) {
 
 function setBackgroundInteractivity(disabled) {
   const supportsInert = 'inert' in HTMLElement.prototype;
-  const focusableSelector = 'a[href],button,input,select,textarea,[tabindex]';
+  const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
-  if (supportsInert) {
-    appContent.inert = disabled;
-  } else {
-    appContent.style.pointerEvents = disabled ? 'none' : '';
-    appContent.querySelectorAll(focusableSelector).forEach((element) => {
-      if (disabled) {
-        element.dataset.prevTabindex = element.getAttribute('tabindex') ?? '';
-        element.setAttribute('tabindex', '-1');
-      } else if ('prevTabindex' in element.dataset) {
-        if (element.dataset.prevTabindex) {
-          element.setAttribute('tabindex', element.dataset.prevTabindex);
-        } else {
-          element.removeAttribute('tabindex');
+  backgroundRegions.forEach((region) => {
+    if (supportsInert) {
+      region.inert = disabled;
+    } else {
+      region.style.pointerEvents = disabled ? 'none' : '';
+      region.querySelectorAll(focusableSelector).forEach((element) => {
+        if (disabled) {
+          element.dataset.modalManagedTabindex = 'true';
+          element.dataset.hadTabindex = element.hasAttribute('tabindex') ? 'true' : 'false';
+          element.dataset.prevTabindex = element.getAttribute('tabindex') ?? '';
+          element.setAttribute('tabindex', '-1');
+        } else if (element.dataset.modalManagedTabindex === 'true') {
+          if (element.dataset.hadTabindex === 'true') {
+            element.setAttribute('tabindex', element.dataset.prevTabindex);
+          } else {
+            element.removeAttribute('tabindex');
+          }
+          delete element.dataset.modalManagedTabindex;
+          delete element.dataset.hadTabindex;
+          delete element.dataset.prevTabindex;
         }
-        delete element.dataset.prevTabindex;
-      }
-    });
-  }
+      });
+    }
 
-  if (disabled) {
-    appContent.setAttribute('aria-hidden', 'true');
-  } else {
-    appContent.removeAttribute('aria-hidden');
-  }
+    if (disabled) {
+      region.setAttribute('aria-hidden', 'true');
+    } else {
+      region.removeAttribute('aria-hidden');
+    }
+  });
 }
 
 function openModal(modal) {
