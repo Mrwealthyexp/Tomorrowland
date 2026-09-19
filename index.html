@@ -25,7 +25,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--black);color:var(--
 .nav-links a:hover::after{width:100%}
 .wallet-btn{background:linear-gradient(135deg,var(--gold),var(--deep-gold));color:var(--black);border:none;padding:.7rem 1.5rem;border-radius:30px;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:1px;font-size:.8rem}
 .wallet-btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(212,175,55,0.4)}
-button:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+button:disabled,[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .mobile-menu-btn{display:none;background:none;border:none;color:var(--gold);font-size:1.5rem;cursor:pointer}
 
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;padding-top:80px}
@@ -397,13 +397,13 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
         <div class="guide-meta"><span>Starter Kit</span><span>12 pages</span></div>
         <h3>Black Cooperative Economics 101</h3>
         <p>A practical overview of rotating savings, cooperatives and community ownership models.</p>
-        <button class="guide-download-btn" type="button" disabled aria-describedby="guide-download-note">Download brief</button>
+        <button class="guide-download-btn" type="button" aria-disabled="true" data-disabled-action="guide-download" aria-describedby="guide-download-note">Download brief</button>
       </article>
       <article class="guide-card">
         <div class="guide-meta"><span>Facilitator Guide</span><span>8 pages</span></div>
         <h3>Reading Circle Blueprint</h3>
         <p>Prompts, cadence and reflection activities for collective study sessions.</p>
-        <button class="guide-download-btn" type="button" disabled aria-describedby="guide-download-note">Download brief</button>
+        <button class="guide-download-btn" type="button" aria-disabled="true" data-disabled-action="guide-download" aria-describedby="guide-download-note">Download brief</button>
       </article>
     </div>
     <p class="section-note" id="guide-download-note">Guide downloads will activate once the prototype briefs are published.</p>
@@ -414,8 +414,8 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
       <div class="treasury-amount">$248,000</div>
       <div class="treasury-label">Illustrative community treasury</div>
       <div class="donate-options">
-        <button class="donate-btn" type="button" disabled aria-describedby="treasury-action-note">Sponsor a shelf</button>
-        <button class="donate-btn gold" type="button" disabled aria-describedby="treasury-action-note">Fund a fellowship</button>
+        <button class="donate-btn" type="button" aria-disabled="true" data-disabled-action="treasury-action" aria-describedby="treasury-action-note">Sponsor a shelf</button>
+        <button class="donate-btn gold" type="button" aria-disabled="true" data-disabled-action="treasury-action" aria-describedby="treasury-action-note">Fund a fellowship</button>
       </div>
       <p class="section-note" id="treasury-action-note">Treasury actions remain disabled until contribution flows are implemented.</p>
     </div>
@@ -651,7 +651,8 @@ function renderBooks() {
     const downloadButton = document.createElement('button');
     downloadButton.className = 'btn-small btn-download';
     downloadButton.type = 'button';
-    downloadButton.disabled = true;
+    downloadButton.setAttribute('aria-disabled', 'true');
+    downloadButton.dataset.disabledAction = 'book-download';
     downloadButton.setAttribute('aria-describedby', 'book-download-note');
     downloadButton.textContent = '⬇ Download';
 
@@ -704,10 +705,12 @@ function setBackgroundInteractivity(disabled) {
       });
     }
 
-    if (disabled) {
-      region.setAttribute('aria-hidden', 'true');
-    } else {
-      region.removeAttribute('aria-hidden');
+    if (!supportsInert) {
+      if (disabled) {
+        region.setAttribute('aria-hidden', 'true');
+      } else {
+        region.removeAttribute('aria-hidden');
+      }
     }
   });
 }
@@ -840,6 +843,11 @@ document.querySelectorAll('[data-open-modal]').forEach((button) => {
 
 document.querySelectorAll('[data-close-modal]').forEach((button) => {
   button.addEventListener('click', () => closeModal(button.closest('.modal-overlay')));
+});
+
+document.addEventListener('click', (event) => {
+  const disabledAction = event.target.closest('[aria-disabled="true"]');
+  if (disabledAction) event.preventDefault();
 });
 
 document.querySelectorAll('.modal-overlay').forEach((overlay) => {
