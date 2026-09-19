@@ -504,7 +504,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
 </footer>
 </div>
 
-<div class="modal-overlay" id="wallet-modal" aria-hidden="true">
+<div class="modal-overlay" id="wallet-modal" aria-hidden="true" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wallet-title" tabindex="-1">
     <button class="modal-close" type="button" data-close-modal aria-label="Close dialog">&times;</button>
     <h3 id="wallet-title">Connect a wallet</h3>
@@ -517,7 +517,7 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
   </div>
 </div>
 
-<div class="modal-overlay book-preview-modal" id="book-preview-modal" aria-hidden="true">
+<div class="modal-overlay book-preview-modal" id="book-preview-modal" aria-hidden="true" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="preview-dialog-title" tabindex="-1">
     <button class="modal-close" type="button" data-close-modal aria-label="Close dialog">&times;</button>
     <h3 id="preview-dialog-title" class="sr-only">Book preview</h3>
@@ -684,7 +684,7 @@ function getFocusableElements(modal) {
 
 function setBackgroundInteractivity(disabled) {
   const supportsInert = 'inert' in HTMLElement.prototype;
-  const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const focusableSelector = 'a[href],button:not([disabled]):not([aria-disabled="true"]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"]):not([aria-disabled="true"])';
 
   backgroundRegions.forEach((region) => {
     if (supportsInert) {
@@ -735,11 +735,12 @@ function openModal(modal) {
   lastFocusedElement = focusOrigin;
   activeOverlay = overlay;
   activeModal = dialog;
+  overlay.hidden = false;
   overlay.classList.add('active');
   overlay.setAttribute('aria-hidden', 'false');
+  setBackgroundInteractivity(true);
   const firstFocusable = getFocusableElements(dialog)[0] || dialog;
   if (firstFocusable) firstFocusable.focus();
-  setBackgroundInteractivity(true);
 }
 
 function closeModal(modal, options = {}) {
@@ -749,6 +750,7 @@ function closeModal(modal, options = {}) {
   const { restoreFocus = true, preserveBackground = false } = options;
   overlay.classList.remove('active');
   overlay.setAttribute('aria-hidden', 'true');
+  overlay.hidden = true;
 
   if (activeOverlay === overlay) {
     activeOverlay = null;
