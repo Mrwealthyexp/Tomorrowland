@@ -589,7 +589,6 @@ const backgroundRegions = [
 let activeFilter = 'all';
 let activeModal = null;
 let activeOverlay = null;
-let activeOriginRegion = null;
 let lastFocusedElement = null;
 
 function renderBooks() {
@@ -712,7 +711,7 @@ function setBackgroundInteractivity(disabled) {
     }
 
     if (!supportsInert) {
-      if (disabled && region !== activeOriginRegion) {
+      if (disabled) {
         region.setAttribute('aria-hidden', 'true');
       } else {
         region.removeAttribute('aria-hidden');
@@ -727,7 +726,6 @@ function openModal(modal) {
   if (!overlay || !dialog) return;
 
   const focusOrigin = document.activeElement;
-  activeOriginRegion = backgroundRegions.find((region) => region.contains(focusOrigin)) || null;
 
   if (activeOverlay && activeOverlay !== overlay) {
     closeModal(activeOverlay, { restoreFocus: false, preserveBackground: true });
@@ -762,7 +760,6 @@ function closeModal(modal, options = {}) {
 
   if (restoreFocus && lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
   if (restoreFocus) lastFocusedElement = null;
-  activeOriginRegion = null;
 }
 
 function showPreview(bookId) {
