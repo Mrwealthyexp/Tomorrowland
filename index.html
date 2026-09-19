@@ -509,10 +509,11 @@ footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);pa
     <button class="modal-close" type="button" data-close-modal aria-label="Close dialog">&times;</button>
     <h3 id="wallet-title">Connect a wallet</h3>
     <p>Select a provider to simulate how members might join the registry in a future integrated version.</p>
+    <p class="section-note" id="wallet-provider-note">Wallet provider actions are disabled in this prototype until live integrations are added.</p>
     <div class="wallet-options">
-      <button class="wallet-option" type="button">🦊 MetaMask</button>
-      <button class="wallet-option" type="button">🌐 WalletConnect</button>
-      <button class="wallet-option" type="button">💼 Coinbase Wallet</button>
+      <button class="wallet-option" type="button" aria-disabled="true" data-disabled-action="wallet-provider" aria-label="MetaMask connection unavailable until live wallet integrations are added" aria-describedby="wallet-provider-note">🦊 MetaMask</button>
+      <button class="wallet-option" type="button" aria-disabled="true" data-disabled-action="wallet-provider" aria-label="WalletConnect connection unavailable until live wallet integrations are added" aria-describedby="wallet-provider-note">🌐 WalletConnect</button>
+      <button class="wallet-option" type="button" aria-disabled="true" data-disabled-action="wallet-provider" aria-label="Coinbase Wallet connection unavailable until live wallet integrations are added" aria-describedby="wallet-provider-note">💼 Coinbase Wallet</button>
     </div>
   </div>
 </div>
@@ -589,7 +590,7 @@ const backgroundRegions = [
 let activeFilter = 'all';
 let activeModal = null;
 let activeOverlay = null;
-let lastFocusedElement = null;
+const modalFocusOrigins = new WeakMap();
 
 function renderBooks() {
   const query = bookSearch.value.trim().toLowerCase();
@@ -727,12 +728,12 @@ function openModal(modal) {
   if (!overlay || !dialog) return;
 
   const focusOrigin = document.activeElement;
+  modalFocusOrigins.set(overlay, focusOrigin);
 
   if (activeOverlay && activeOverlay !== overlay) {
     closeModal(activeOverlay, { restoreFocus: false, preserveBackground: true });
   }
 
-  lastFocusedElement = focusOrigin;
   activeOverlay = overlay;
   activeModal = dialog;
   overlay.hidden = false;
@@ -763,8 +764,9 @@ function closeModal(modal, options = {}) {
     setBackgroundInteractivity(false);
   }
 
-  if (restoreFocus && lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
-  if (restoreFocus) lastFocusedElement = null;
+  const focusOrigin = modalFocusOrigins.get(overlay);
+  if (restoreFocus && focusOrigin && typeof focusOrigin.focus === 'function') focusOrigin.focus();
+  modalFocusOrigins.delete(overlay);
 }
 
 function showPreview(bookId) {
