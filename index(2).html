@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackpower.tomorrowland</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4AF37;--deep-gold:#B8941F;--black:#0a0a0a;--rich-black:#1a1a1a;--dark-gray:#2a2a2a;--red:#c41e3a;--green:#228B22;--cream:#f5f5dc;--admin:#ff6b35;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--black);color:var(--cream);overflow-x:hidden}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px}
+
+.navbar{position:fixed;top:0;width:100%;padding:1rem 3rem;display:flex;justify-content:space-between;align-items:center;z-index:1000;background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,0.2)}
+.logo{font-family:'Syncopate',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px;cursor:pointer;user-select:none;transition:all .3s}
+.logo:hover{text-shadow:0 0 20px rgba(212,175,55,0.5)}
+.logo span{color:var(--cream)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--cream);text-decoration:none;font-weight:500;font-size:.85rem;text-transform:uppercase;letter-spacing:1px;transition:color .3s;position:relative}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a::after{content:'';position:absolute;bottom:-5px;left:0;width:0;height:2px;background:var(--gold);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.wallet-btn{background:linear-gradient(135deg,var(--gold),var(--deep-gold));color:var(--black);border:none;padding:.7rem 1.5rem;border-radius:30px;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:1px;font-size:.8rem}
+.wallet-btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(212,175,55,0.4)}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--gold);font-size:1.5rem;cursor:pointer}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;padding-top:80px}
+.collage-container{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.2}
+.collage-img{position:absolute;border-radius:4px;filter:grayscale(100%) sepia(30%);transition:all .5s;border:1px solid rgba(212,175,55,0.3);display:flex;align-items:center;justify-content:center}
+.collage-img:hover{filter:grayscale(0%) sepia(0%);transform:scale(1.05);z-index:10}
+.hero-content{position:relative;z-index:1;text-align:center;max-width:900px;padding:2rem}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;background:linear-gradient(135deg,var(--gold),var(--cream),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;letter-spacing:3px}
+.hero-subtitle{font-size:1.3rem;color:var(--cream);opacity:.9;margin-bottom:2rem;font-weight:300;letter-spacing:1px}
+.hero-desc{font-size:1rem;line-height:1.8;max-width:700px;margin:0 auto 2rem;opacity:.8}
+.cta-group{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cta-primary{background:linear-gradient(135deg,var(--gold),var(--deep-gold));color:var(--black);padding:1rem 2.5rem;border-radius:50px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:2px;transition:all .3s;border:2px solid var(--gold);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:.9rem}
+.cta-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(212,175,55,0.3)}
+.cta-secondary{background:transparent;color:var(--gold);padding:1rem 2.5rem;border-radius:50px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:2px;transition:all .3s;border:2px solid var(--gold);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:.9rem}
+.cta-secondary:hover{background:var(--gold);color:var(--black)}
+.grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(212,175,55,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,0.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+
+section{position:relative;z-index:1;padding:6rem 2rem}
+.section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,3rem);text-align:center;margin-bottom:1rem;color:var(--gold);text-transform:uppercase;letter-spacing:3px}
+.section-subtitle{text-align:center;opacity:.7;margin-bottom:4rem;font-size:1.1rem}
+
+.pioneer-wall{background:linear-gradient(180deg,var(--black) 0%,var(--rich-black) 100%)}
+.pioneer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;max-width:1400px;margin:0 auto}
+.pioneer-card{position:relative;overflow:hidden;border-radius:12px;border:1px solid rgba(212,175,55,0.3);transition:all .4s;cursor:pointer;aspect-ratio:3/4;background:var(--dark-gray)}
+.pioneer-card::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.9) 100%);z-index:1}
+.pioneer-card:hover{transform:translateY(-10px);border-color:var(--gold);box-shadow:0 15px 40px rgba(212,175,55,0.2)}
+.pioneer-info{position:absolute;bottom:0;left:0;right:0;padding:1.5rem;z-index:2}
+.pioneer-name{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:.3rem}
+.pioneer-era{font-size:.8rem;opacity:.7;text-transform:uppercase;letter-spacing:1px}
+.pioneer-quote{font-size:.85rem;font-style:italic;margin-top:.5rem;opacity:0;transform:translateY(10px);transition:all .3s}
+.pioneer-card:hover .pioneer-quote{opacity:.9;transform:translateY(0)}
+
+.registry-section{background:var(--rich-black)}
+.registry-container{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.registry-info h3{font-family:'Orbitron',sans-serif;font-size:1.8rem;color:var(--gold);margin-bottom:1rem}
+.registry-info p{line-height:1.8;opacity:.85;margin-bottom:1.5rem}
+.feature-list{list-style:none}
+.feature-list li{padding:.8rem 0;padding-left:2rem;position:relative;border-bottom:1px solid rgba(212,175,55,0.1)}
+.feature-list li::before{content:'✦';position:absolute;left:0;color:var(--gold)}
+.registry-card{background:linear-gradient(145deg,var(--dark-gray),var(--black));border:1px solid rgba(212,175,55,0.3);border-radius:20px;padding:2.5rem;position:relative;overflow:hidden}
+.registry-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(212,175,55,0.1) 0%,transparent 70%)}
+.registry-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.stat-box{text-align:center;padding:1.5rem;background:rgba(212,175,55,0.05);border-radius:12px;border:1px solid rgba(212,175,55,0.1)}
+.stat-number{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--gold);display:block}
+.stat-label{font-size:.8rem;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-top:.3rem}
+.connect-wallet-form{display:flex;flex-direction:column;gap:1rem}
+.wallet-input{background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);padding:1rem;border-radius:10px;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:.9rem}
+.wallet-input:focus{outline:none;border-color:var(--gold)}
+.wallet-input::placeholder{color:rgba(245,245,220,0.4)}
+
+.collab-section{background:var(--black)}
+.collab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+.collab-card{background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(212,175,55,0.2);border-radius:16px;padding:2.5rem;transition:all .4s;position:relative;overflow:hidden}
+.collab-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.collab-card:hover::after{transform:scaleX(1)}
+.collab-card:hover{transform:translateY(-5px);border-color:rgba(212,175,55,0.5);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.collab-icon{font-size:2.5rem;margin-bottom:1rem}
+.collab-card h3{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:var(--gold);margin-bottom:1rem}
+.collab-card p{opacity:.8;line-height:1.7;font-size:.95rem}
+
+.academy-section{background:linear-gradient(180deg,var(--rich-black) 0%,#0d0d1a 50%,var(--black) 100%);position:relative}
+.academy-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.academy-header{text-align:center;max-width:800px;margin:0 auto 3rem}
+.academy-header p{opacity:.8;line-height:1.8;margin-top:1rem}
+.treasury-badge{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(34,139,34,0.1));border:1px solid rgba(212,175,55,0.3);padding:.6rem 1.2rem;border-radius:30px;font-size:.85rem;margin-top:1.5rem;color:var(--gold)}
+.treasury-badge .pulse-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+.academy-controls{max-width:1200px;margin:0 auto 3rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:center}
+.search-box{flex:1;min-width:280px;max-width:500px;position:relative}
+.search-box input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);padding:1rem 1rem 1rem 3rem;border-radius:12px;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:.95rem}
+.search-box input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 15px rgba(212,175,55,0.1)}
+.search-box::before{content:'🔍';position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:.5}
+.filter-tags{display:flex;gap:.5rem;flex-wrap:wrap}
+.filter-tag{background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);color:var(--cream);padding:.6rem 1.2rem;border-radius:20px;cursor:pointer;font-size:.85rem;transition:all .3s;font-family:'Space Grotesk',sans-serif}
+.filter-tag:hover,.filter-tag.active{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;max-width:1400px;margin:0 auto}
+.book-card{background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(212,175,55,0.15);border-radius:16px;overflow:hidden;transition:all .4s;display:flex;flex-direction:column}
+.book-card:hover{transform:translateY(-8px);border-color:rgba(212,175,55,0.5);box-shadow:0 20px 40px rgba(0,0,0,0.4),0 0 30px rgba(212,175,55,0.05)}
+.book-cover{height:220px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.book-cover-bg{position:absolute;inset:0;opacity:.6}
+.book-cover-content{position:relative;z-index:1;text-align:center;padding:1.5rem}
+.book-cover-content h4{font-family:'Crimson Text',serif;font-size:1.3rem;font-weight:600;color:var(--cream);margin-bottom:.3rem;line-height:1.3}
+.book-cover-content .author-name{font-size:.9rem;color:var(--gold);font-style:italic}
+.book-info{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+.book-meta{display:flex;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap}
+.book-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;padding:.2rem .6rem;border-radius:4px;background:rgba(212,175,55,0.1);color:var(--gold);border:1px solid rgba(212,175,55,0.2)}
+.book-desc{font-size:.9rem;line-height:1.6;opacity:.75;margin-bottom:1rem;flex:1}
+.book-actions{display:flex;gap:.5rem}
+.btn-small{flex:1;padding:.7rem;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.3rem;border:none}
+.btn-download{background:linear-gradient(135deg,var(--gold),var(--deep-gold));color:var(--black)}
+.btn-download:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(212,175,55,0.3)}
+.btn-preview{background:transparent;color:var(--gold);border:1px solid rgba(212,175,55,0.3)}
+.btn-preview:hover{background:rgba(212,175,55,0.1)}
+.guides-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+.guide-card{background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(212,175,55,0.15);border-radius:16px;padding:2rem;transition:all .4s;position:relative}
+.guide-card:hover{border-color:rgba(212,175,55,0.4);transform:translateY(-5px)}
+.guide-card h3{font-family:'Orbitron',sans-serif;font-size:1.1rem;color:var(--gold);margin-bottom:.8rem}
+.guide-card p{font-size:.9rem;opacity:.75;line-height:1.6;margin-bottom:1rem}
+.guide-meta{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;opacity:.6;margin-bottom:1rem}
+.guide-download-btn{width:100%;padding:.8rem;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.3);color:var(--gold);border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:1px;font-size:.8rem}
+.guide-download-btn:hover{background:var(--gold);color:var(--black)}
+.treasury-panel{max-width:800px;margin:4rem auto 0;background:linear-gradient(145deg,rgba(34,139,34,0.1),rgba(212,175,55,0.05));border:1px solid rgba(34,139,34,0.3);border-radius:20px;padding:2.5rem;text-align:center}
+.treasury-panel h3{font-family:'Orbitron',sans-serif;color:var(--green);margin-bottom:1rem;font-size:1.3rem}
+.treasury-panel p{opacity:.8;line-height:1.7;margin-bottom:1.5rem}
+.treasury-amount{font-family:'Orbitron',sans-serif;font-size:2.5rem;color:var(--gold);margin-bottom:.5rem}
+.treasury-label{text-transform:uppercase;letter-spacing:2px;font-size:.8rem;opacity:.6;margin-bottom:1.5rem}
+.donate-options{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.donate-btn{padding:.8rem 1.5rem;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;transition:all .3s;border:1px solid var(--green);background:transparent;color:var(--green)}
+.donate-btn:hover{background:var(--green);color:var(--black)}
+.donate-btn.gold{border-color:var(--gold);color:var(--gold)}
+.donate-btn.gold:hover{background:var(--gold);color:var(--black)}
+
+.blueprint-section{background:linear-gradient(180deg,var(--rich-black) 0%,var(--black) 100%);position:relative}
+.blueprint-container{max-width:1200px;margin:0 auto}
+.blueprint-timeline{position:relative;padding:2rem 0}
+.blueprint-timeline::before{content:'';position:absolute;left:50%;transform:translateX(-50%);width:2px;height:100%;background:linear-gradient(180deg,var(--gold),transparent)}
+.timeline-item{display:flex;justify-content:flex-end;padding-right:50%;position:relative;margin-bottom:4rem}
+.timeline-item:nth-child(even){justify-content:flex-start;padding-right:0;padding-left:50%}
+.timeline-content{background:var(--dark-gray);border:1px solid rgba(212,175,55,0.2);border-radius:16px;padding:2rem;max-width:450px;margin:0 2rem;position:relative}
+.timeline-content::before{content:'';position:absolute;top:50%;width:20px;height:20px;background:var(--gold);border-radius:50%;border:4px solid var(--black)}
+.timeline-item:nth-child(odd) .timeline-content::before{right:-42px}
+.timeline-item:nth-child(even) .timeline-content::before{left:-42px}
+.timeline-year{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:.9rem;margin-bottom:.5rem}
+.timeline-title{font-size:1.3rem;margin-bottom:.5rem;font-weight:600}
+.timeline-desc{opacity:.8;line-height:1.6;font-size:.95rem}
+
+.community-section{background:var(--black)}
+.community-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;max-width:1000px;margin:0 auto}
+.community-stat{text-align:center;padding:3rem 2rem;background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border-radius:20px;border:1px solid rgba(212,175,55,0.15);transition:all .4s}
+.community-stat:hover{border-color:var(--gold);transform:scale(1.02)}
+.community-stat .number{font-family:'Orbitron',sans-serif;font-size:3rem;color:var(--gold);display:block;margin-bottom:.5rem}
+.community-stat .label{text-transform:uppercase;letter-spacing:2px;font-size:.9rem;opacity:.8}
+
+footer{background:var(--rich-black);border-top:1px solid rgba(212,175,55,0.2);padding:4rem 2rem 2rem;text-align:center}
+.footer-content{max-width:800px;margin:0 auto}
+.footer-logo{font-family:'Syncopate',sans-serif;font-size:1.5rem;color:var(--gold);margin-bottom:1rem}
+.footer-links{display:flex;justify-content:center;gap:2rem;margin:2rem 0;flex-wrap:wrap}
+.footer-links a{color:var(--cream);text-decoration:none;opacity:.7;transition:opacity .3s}
+.footer-links a:hover{opacity:1;color:var(--gold)}
+.footer-bottom{margin-top:2rem;padding-top:2rem;border-top:1px solid rgba(212,175,55,0.1);opacity:.5;font-size:.85rem}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;justify-content:center;align-items:center;backdrop-filter:blur(8px);padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--rich-black);border:1px solid var(--gold);border-radius:20px;padding:2.5rem;max-width:500px;width:100%;text-align:center;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Orbitron',sans-serif;color:var(--gold);margin-bottom:1rem;font-size:1.4rem}
+.modal p{margin-bottom:1.5rem;opacity:.8;line-height:1.6}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--gold);font-size:1.5rem;cursor:pointer}
+.wallet-options{display:flex;flex-direction:column;gap:.8rem}
+.wallet-option{background:var(--dark-gray);border:1px solid rgba(212,175,55,0.3);padding:1rem;border-radius:12px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:1rem;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:1rem}
+.wallet-option:hover{border-color:var(--gold);background:rgba(212,175,55,0.1)}
+.book-preview-modal .modal{max-width:700px;text-align:left}
+.preview-header{display:flex;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.preview-cover{width:120px;height:160px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.preview-cover span{font-family:'Crimson Text',serif;font-size:2rem;font-weight:600;color:var(--cream)}
+.preview-info h4{font-family:'Crimson Text',serif;font-size:1.5rem;color:var(--gold);margin-bottom:.3rem}
+.preview-info .author{color:var(--cream);opacity:.8;font-style:italic;margin-bottom:.5rem}
+.preview-info .year{font-size:.85rem;opacity:.6}
+.preview-body{line-height:1.8;opacity:.85}
+.preview-body p{margin-bottom:1rem}
+.chapter-list{list-style:none;margin:1rem 0}
+.chapter-list li{padding:.5rem 0;border-bottom:1px solid rgba(212,175,55,0.1);display:flex;justify-content:space-between;font-size:.9rem}
+.chapter-list li span{color:var(--gold);font-size:.8rem}
+
+/* ADMIN */
+.admin-section{background:linear-gradient(180deg,#0d0d1a 0%,var(--black) 100%);position:relative;display:none}
+.admin-section.active{display:block}
+.admin-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--admin),transparent)}
+.admin-header{text-align:center;margin-bottom:3rem}
+.admin-header h2{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--admin);text-transform:uppercase;letter-spacing:3px}
+.admin-header p{opacity:.7;margin-top:.5rem}
+.admin-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.4);color:var(--admin);padding:.5rem 1.2rem;border-radius:30px;font-size:.8rem;text-transform:uppercase;letter-spacing:2px;margin-top:1rem}
+.admin-badge .pulse-dot{width:8px;height:8px;background:var(--admin);border-radius:50%;animation:pulse 2s infinite}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+.admin-card{background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(255,107,53,0.25);border-radius:16px;padding:2rem;transition:all .3s}
+.admin-card:hover{border-color:rgba(255,107,53,0.5)}
+.admin-card h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--admin);margin-bottom:1rem;text-transform:uppercase;letter-spacing:1px}
+.admin-card .big-number{font-family:'Orbitron',sans-serif;font-size:2.2rem;color:var(--gold)}
+.admin-card p{opacity:.7;font-size:.9rem;margin-top:.5rem}
+.admin-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:1rem}
+.admin-table th{text-align:left;padding:.6rem;color:var(--admin);border-bottom:1px solid rgba(255,107,53,0.3);text-transform:uppercase;letter-spacing:1px;font-size:.75rem}
+.admin-table td{padding:.6rem;border-bottom:1px solid rgba(212,175,55,0.08);opacity:.85}
+.admin-lock{max-width:420px;margin:0 auto;background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(255,107,53,0.35);border-radius:20px;padding:3rem;text-align:center}
+.admin-lock input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,107,53,0.4);padding:1rem;border-radius:10px;color:var(--cream);font-family:'Space Grotesk',sans-serif;margin:1rem 0;text-align:center;letter-spacing:2px}
+.admin-lock input:focus{outline:none;border-color:var(--admin)}
+.admin-lock button{width:100%;padding:.9rem;background:linear-gradient(135deg,var(--admin),#d14e1f);border:none;border-radius:10px;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px}
+.admin-lock .hint{margin-top:1rem;font-size:.75rem;opacity:.4}
+
+/* KEYFRAMES + EXTRAS */
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,139,34,.55)}70%{box-shadow:0 0 0 10px rgba(34,139,34,0)}100%{box-shadow:0 0 0 0 rgba(34,139,34,0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.collage-img{animation:float 8s ease-in-out infinite}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(--rich-black);border:1px solid var(--gold);color:var(--cream);padding:1rem 2rem;border-radius:12px;z-index:3000;transition:transform .4s;font-size:.9rem;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.result-count{text-align:center;opacity:.5;font-size:.8rem;margin:-1.5rem 0 2rem;letter-spacing:1px}
+
+/* TREASURY COMMONS */
+.commons-section{background:linear-gradient(180deg,var(--black),#0d1410 50%,var(--black))}
+.commons-card{max-width:760px;margin:0 auto;background:linear-gradient(145deg,rgba(34,139,34,0.08),rgba(20,30,20,0.6));border:1px solid rgba(34,139,34,0.35);border-radius:24px;padding:3.5rem 2.5rem;text-align:center}
+.commons-card h3{font-family:'Orbitron',sans-serif;color:var(--green);font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.2rem}
+.commons-card .desc{opacity:.75;line-height:1.8;max-width:560px;margin:0 auto 1.5rem}
+.commons-amount{font-family:'Orbitron',sans-serif;font-size:clamp(2.2rem,6vw,3.2rem);color:var(--gold);margin-bottom:.4rem}
+.commons-label{text-transform:uppercase;letter-spacing:3px;font-size:.75rem;opacity:.55;margin-bottom:1.2rem}
+.commons-note{font-size:.85rem;opacity:.6;margin-bottom:1.8rem}
+.commons-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.commons-btn{padding:.9rem 1.8rem;border-radius:12px;background:transparent;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;transition:all .3s;font-size:.9rem}
+.commons-btn.green{border:1px solid var(--green);color:var(--green)}
+.commons-btn.green:hover{background:var(--green);color:var(--black)}
+.commons-btn.gold{border:1px solid var(--gold);color:var(--gold)}
+.commons-btn.gold:hover{background:var(--gold);color:var(--black)}
+
+/* RECLAMATION LEDGER */
+.ledger-section{background:linear-gradient(180deg,var(--black) 0%,var(--rich-black) 60%,var(--black) 100%);position:relative}
+.ledger-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.ledger-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+.ledger-card{background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(196,30,58,0.25);border-radius:16px;padding:2rem;transition:all .4s;position:relative;overflow:hidden}
+.ledger-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--red),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.ledger-card:hover::after{transform:scaleX(1)}
+.ledger-card:hover{transform:translateY(-5px);border-color:rgba(196,30,58,0.5)}
+.ledger-era{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);font-weight:700;margin-bottom:.6rem}
+.ledger-card h3{font-family:'Orbitron',sans-serif;font-size:1.05rem;color:var(--gold);margin-bottom:.7rem}
+.ledger-card p{font-size:.88rem;opacity:.78;line-height:1.65;margin-bottom:.9rem}
+.ledger-lesson{font-size:.8rem;border-left:3px solid var(--gold);padding-left:.9rem;color:var(--gold);opacity:.9;font-style:italic}
+.rebuild-panel{max-width:1000px;margin:4rem auto 0;background:linear-gradient(145deg,#141410,#1e1a10);border:1px solid var(--gold);border-radius:24px;padding:3rem;position:relative;overflow:hidden}
+.rebuild-panel::before{content:'';position:absolute;top:-40%;right:-30%;width:70%;height:120%;background:radial-gradient(circle,rgba(212,175,55,0.08),transparent 70%)}
+.rebuild-panel h3{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1.4rem;margin-bottom:.5rem}
+.rebuild-panel .sub{opacity:.75;margin-bottom:2rem;max-width:640px;line-height:1.7}
+.rebuild-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
+.rebuild-step{background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.2);border-radius:14px;padding:1.5rem}
+.rebuild-step .step-num{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1.6rem;display:block;margin-bottom:.4rem}
+.rebuild-step h4{font-size:.95rem;margin-bottom:.4rem;color:var(--cream)}
+.rebuild-step p{font-size:.8rem;opacity:.7;line-height:1.55}
+.identity-note{max-width:760px;margin:2.5rem auto 0;text-align:center;background:rgba(212,175,55,0.05);border:1px dashed rgba(212,175,55,0.35);border-radius:16px;padding:2rem}
+.identity-note h4{font-family:'Orbitron',sans-serif;color:var(--gold);margin-bottom:.6rem;font-size:1rem}
+.identity-note p{font-size:.88rem;opacity:.8;line-height:1.7}
+.identity-note a{color:var(--gold);text-decoration:underline}
+
+/* JUSTICE — THE OVERLOOKED */
+.justice-section{background:linear-gradient(180deg,var(--rich-black) 0%,#120d0d 50%,var(--black) 100%);position:relative}
+.justice-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.justice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+.memorial-card{background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid rgba(212,175,55,0.15);border-radius:16px;padding:2rem;transition:all .4s}
+.memorial-card:hover{transform:translateY(-5px);border-color:rgba(212,175,55,0.4)}
+.memorial-name{font-family:'Crimson Text',serif;font-size:1.3rem;color:var(--cream);margin-bottom:.2rem}
+.memorial-meta{font-size:.8rem;opacity:.6;margin-bottom:.8rem}
+.memorial-desc{font-size:.88rem;opacity:.78;line-height:1.65;margin-bottom:1rem}
+.status-pill{display:inline-block;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;font-weight:700;padding:.3rem .8rem;border-radius:100px}
+.status-cold{background:rgba(196,30,58,0.15);color:#e06070;border:1px solid rgba(196,30,58,0.4)}
+.status-none{background:rgba(255,107,53,0.12);color:var(--admin);border:1px solid rgba(255,107,53,0.35)}
+.status-investigating{background:rgba(212,175,55,0.12);color:var(--gold);border:1px solid rgba(212,175,55,0.35)}
+.family-fund{max-width:760px;margin:4rem auto 0;background:linear-gradient(145deg,rgba(196,30,58,0.08),rgba(30,15,15,0.6));border:1px solid rgba(196,30,58,0.35);border-radius:24px;padding:3rem;text-align:center}
+.family-fund h3{font-family:'Orbitron',sans-serif;color:#e06070;margin-bottom:1rem;font-size:1.2rem;letter-spacing:1px}
+.family-fund p{opacity:.78;line-height:1.7;margin-bottom:1.5rem}
+.fund-amount{font-family:'Orbitron',sans-serif;font-size:2.4rem;color:var(--gold);margin-bottom:.3rem}
+.fund-label{text-transform:uppercase;letter-spacing:2px;font-size:.75rem;opacity:.55;margin-bottom:1.5rem}
+.report-case{max-width:760px;margin:2.5rem auto 0;background:var(--rich-black);border:1px solid rgba(212,175,55,0.2);border-radius:20px;padding:2.5rem}
+.report-case h4{font-family:'Orbitron',sans-serif;color:var(--gold);margin-bottom:1.2rem;font-size:1rem;text-transform:uppercase;letter-spacing:1px}
+.report-case input,.report-case textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);padding:.9rem;border-radius:10px;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:.9rem;margin-bottom:1rem}
+.report-case input:focus,.report-case textarea:focus{outline:none;border-color:var(--gold)}
+.report-case button{width:100%;padding:.9rem;background:linear-gradient(135deg,var(--gold),var(--deep-gold));border:none;border-radius:10px;color:var(--black);font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px}
+
+/* MARKETPLACE */
+.market-section{background:var(--rich-black)}
+.market-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;max-width:1200px;margin:0 auto}
+.biz-card{background:linear-gradient(145deg,var(--dark-gray),var(--black));border:1px solid rgba(212,175,55,0.2);border-radius:16px;padding:2rem;transition:all .4s;position:relative}
+.biz-card:hover{transform:translateY(-5px);border-color:var(--gold)}
+.biz-verified{position:absolute;top:1.2rem;right:1.2rem;font-size:.68rem;color:var(--green);border:1px solid rgba(34,139,34,0.4);padding:.2rem .6rem;border-radius:100px;text-transform:uppercase;letter-spacing:1px}
+.biz-icon{font-size:2rem;margin-bottom:.8rem}
+.biz-card h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:.4rem}
+.biz-cat{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;opacity:.55;margin-bottom:.7rem}
+.biz-card p{font-size:.85rem;opacity:.78;line-height:1.6;margin-bottom:1rem}
+.biz-card .loc{font-size:.78rem;color:var(--gold);opacity:.8}
+
+/* COIN */
+.coin-section{background:linear-gradient(180deg,var(--black),#14100a 50%,var(--black))}
+.coin-panel{max-width:900px;margin:0 auto;background:linear-gradient(145deg,var(--rich-black),var(--dark-gray));border:1px solid var(--gold);border-radius:24px;padding:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+@media(max-width:820px){.coin-panel{grid-template-columns:1fr}}
+.coin-panel h3{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1.5rem;margin-bottom:.5rem}
+.coin-ticker{display:inline-block;background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.35);color:var(--gold);font-size:.75rem;font-weight:700;letter-spacing:2px;padding:.3rem .9rem;border-radius:100px;margin-bottom:1.2rem}
+.coin-panel p{opacity:.8;line-height:1.7;font-size:.92rem;margin-bottom:1.2rem}
+.coin-facts{list-style:none;font-size:.85rem}
+.coin-facts li{padding:.5rem 0;border-bottom:1px solid rgba(212,175,55,0.1);opacity:.85}
+.coin-facts li b{color:var(--gold);font-weight:600}
+.alloc-row{margin-bottom:1.2rem}
+.alloc-row .alloc-head{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.4rem}
+.alloc-row .alloc-head b{color:var(--gold)}
+.alloc-track{height:10px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden}
+.alloc-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--deep-gold),var(--gold))}
+
+/* ORACLE AI */
+.oracle-fab{position:fixed;bottom:2rem;right:2rem;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--deep-gold));border:none;color:var(--black);font-size:1.6rem;cursor:pointer;z-index:2500;box-shadow:0 8px 30px rgba(212,175,55,0.4);transition:transform .3s;display:flex;align-items:center;justify-content:center}
+.oracle-fab:hover{transform:scale(1.1)}
+.oracle-panel{position:fixed;bottom:6.5rem;right:2rem;width:min(380px,calc(100vw - 2rem));height:520px;background:var(--rich-black);border:1px solid var(--gold);border-radius:20px;z-index:2500;display:none;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.7)}
+.oracle-panel.open{display:flex}
+.oracle-head{padding:1.2rem 1.5rem;border-bottom:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;gap:.8rem;background:rgba(212,175,55,0.06)}
+.oracle-head .o-dot{width:10px;height:10px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.oracle-head h4{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:.95rem;letter-spacing:1px}
+.oracle-head span{font-size:.72rem;opacity:.55;display:block}
+.oracle-body{flex:1;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:.9rem}
+.o-msg{max-width:88%;padding:.8rem 1rem;border-radius:14px;font-size:.86rem;line-height:1.55;white-space:pre-line}
+.o-msg.ai{background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.25);align-self:flex-start}
+.o-msg.user{background:var(--dark-gray);border:1px solid rgba(255,255,255,0.1);align-self:flex-end}
+.o-chips{display:flex;gap:.5rem;flex-wrap:wrap;padding:0 1.2rem .8rem}
+.o-chip{background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);color:var(--gold);font-size:.72rem;padding:.4rem .8rem;border-radius:100px;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+.o-chip:hover{background:var(--gold);color:var(--black)}
+.oracle-input{display:flex;gap:.6rem;padding:1rem 1.2rem;border-top:1px solid rgba(212,175,55,0.25)}
+.oracle-input input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:10px;padding:.7rem .9rem;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:.85rem}
+.oracle-input input:focus{outline:none;border-color:var(--gold)}
+.oracle-input button{background:linear-gradient(135deg,var(--gold),var(--deep-gold));border:none;border-radius:10px;color:var(--black);padding:.7rem 1.1rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+
+@media(max-width:968px){
+  .registry-container{grid-template-columns:1fr}
+  .timeline-item,.timeline-item:nth-child(even){justify-content:center;padding:0}
+  .blueprint-timeline::before{left:20px}
+  .timeline-item:nth-child(odd) .timeline-content::before,.timeline-item:nth-child(even) .timeline-content::before{left:-26px;right:auto}
+  .timeline-content{margin:0 0 0 3rem;max-width:100%}
+}
+@media(max-width:768px){
+  .navbar{padding:1rem 1.5rem}
+  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:var(--rich-black);flex-direction:column;padding:2rem;gap:1.5rem;border-bottom:1px solid var(--gold)}
+  .nav-links.open{display:flex}
+  .mobile-menu-btn{display:block}
+  section{padding:4rem 1.25rem}
+  .treasury-amount{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav class="navbar">
+  <div class="logo" onclick="scrollToTop()">Blackpower<span>.Tomorrowland</span></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#pioneers" onclick="closeMenu()">Pioneers</a></li>
+    <li><a href="#registry" onclick="closeMenu()">Registry</a></li>
+    <li><a href="#academy" onclick="closeMenu()">Academy</a></li>
+    <li><a href="#ledger" onclick="closeMenu()">Ledger</a></li>
+    <li><a href="#justice" onclick="closeMenu()">Justice</a></li>
+    <li><a href="#market" onclick="closeMenu()">Market</a></li>
+    <li><a href="#coin" onclick="closeMenu()">Coin</a></li>
+    <li><a href="#blueprint" onclick="closeMenu()">Blueprint</a></li>
+    <li><a href="#community" onclick="closeMenu()">Community</a></li>
+  </ul>
+  <button class="wallet-btn" onclick="openWalletModal()">Connect Wallet</button>
+  <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="collage-container" id="collage"></div>
+  <div class="hero-content">
+    <h1>Blackpower<br>Tomorrowland</h1>
+    <p class="hero-subtitle">Education · Economics · Sovereignty · Tomorrow</p>
+    <p class="hero-desc">A sovereign digital homeland for the global diaspora. A living library of our greatest minds, a community treasury with no gatekeepers, and a blueprint for the world we are building together.</p>
+    <div class="cta-group">
+      <a href="#academy" class="cta-primary">Enter the Academy</a>
+      <a href="#registry" class="cta-secondary">Join the Registry</a>
+    </div>
+  </div>
+</section>
+
+<!-- PIONEER WALL -->
+<section class="pioneer-wall" id="pioneers">
+  <h2 class="section-title">Wall of Pioneers</h2>
+  <p class="section-subtitle">We stand on the shoulders of giants. Hover to hear them speak.</p>
+  <div class="pioneer-grid" id="pioneerGrid"></div>
+</section>
+
+<!-- REGISTRY -->
+<section class="registry-section" id="registry">
+  <div class="registry-container">
+    <div class="registry-info">
+      <h3>The Sovereign Registry</h3>
+      <p>Every member of the diaspora deserves a place on the record. Register your wallet to join the roll of builders, scholars, and funders shaping tomorrowland.</p>
+      <ul class="feature-list">
+        <li>On-chain proof of membership</li>
+        <li>Access to Academy curricula &amp; archives</li>
+        <li>Treasury transparency dashboard</li>
+        <li>Priority access to governance (coming soon)</li>
+      </ul>
+    </div>
+    <div class="registry-card">
+      <div class="registry-stats">
+        <div class="stat-box"><span class="stat-number" id="statMembers">1,248</span><span class="stat-label">Registered</span></div>
+        <div class="stat-box"><span class="stat-number" id="statCountries">37</span><span class="stat-label">Countries</span></div>
+      </div>
+      <div class="connect-wallet-form">
+        <input class="wallet-input" id="regName" type="text" placeholder="Your name or alias">
+        <input class="wallet-input" id="regWallet" type="text" placeholder="Polygon wallet address (0x…)">
+        <button class="cta-primary" onclick="registerMember()">Register</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLABORATE -->
+<section class="collab-section" id="collaborate">
+  <h2 class="section-title">Ways to Build</h2>
+  <p class="section-subtitle">The movement needs every skill. Find your lane.</p>
+  <div class="collab-grid">
+    <div class="collab-card"><div class="collab-icon">📚</div><h3>Educators</h3><p>Curate reading paths, host study circles, and help translate the canon for the next generation of learners.</p></div>
+    <div class="collab-card"><div class="collab-icon">💻</div><h3>Technologists</h3><p>Build sovereign tools — wallets, archives, governance rails — on open protocols owned by no one but us.</p></div>
+    <div class="collab-card"><div class="collab-icon">◎</div><h3>Funders</h3><p>Capitalize the treasury. Every POL is transparent, multisig-secured on Polygon, and deployed by the community.</p></div>
+    <div class="collab-card"><div class="collab-icon">🎨</div><h3>Artists</h3><p>Shape the visual and sonic language of tomorrowland — covers, murals, film, sound.</p></div>
+    <div class="collab-card"><div class="collab-icon">🌍</div><h3>Organizers</h3><p>Anchor regional hubs, convene local chapters, and connect the digital homeland to physical community.</p></div>
+    <div class="collab-card"><div class="collab-icon">⚖️</div><h3>Strategists</h3><p>Design the legal, cooperative, and policy frameworks that protect what we build for generations.</p></div>
+  </div>
+</section>
+
+<!-- ACADEMY -->
+<section class="academy-section" id="academy">
+  <div class="academy-header">
+    <h2 class="section-title">The Educational Academy</h2>
+    <p>A free digital library of 24 essential works by Black authors — history, economics, philosophy, technology, fiction, and science. Every download funds the Community Treasury.</p>
+    <div class="treasury-badge"><span class="pulse-dot"></span>100% of proceeds fund the Community Treasury</div>
+  </div>
+  <div class="academy-controls">
+    <div class="search-box"><input type="text" id="searchInput" placeholder="Search titles, authors, topics…" oninput="renderBooks()"></div>
+    <div class="filter-tags" id="filterTags"></div>
+  </div>
+  <div class="result-count" id="resultCount"></div>
+  <div class="book-grid" id="bookGrid"></div>
+
+  <h2 class="section-title" style="margin-top:6rem">Study Guides</h2>
+  <p class="section-subtitle">Six curated learning paths with discussion questions, reflection prompts, and community forum integration.</p>
+  <div class="guides-grid" id="guideGrid"></div>
+
+  <div class="treasury-panel" id="treasury">
+    <h3>Community Treasury</h3>
+    <div class="treasury-amount">◎<span id="treasuryAmount">4,237.00</span> POL</div>
+    <div class="treasury-label">Held in community multi-sig on Polygon · No middlemen · No gatekeepers</div>
+    <p>Every library download auto-adds a micro-donation to the treasury. Give directly below — demo wallet; wire to MetaMask / WalletConnect / Coinbase SDKs in production.</p>
+    <div class="donate-options">
+      <button class="donate-btn" onclick="donate(5)">5 POL</button>
+      <button class="donate-btn" onclick="donate(25)">25 POL</button>
+      <button class="donate-btn" onclick="donate(100)">100 POL</button>
+      <button class="donate-btn gold" onclick="donateCustom()">Custom</button>
+    </div>
+    <div style="margin-top:1rem"><input class="wallet-input" id="customAmt" type="number" step="0.01" min="0.01" placeholder="Custom amount (POL)" style="max-width:260px;margin:0 auto"></div>
+  </div>
+</section>
+
+<!-- RECLAMATION LEDGER -->
+<section class="ledger-section" id="ledger">
+  <h2 class="section-title">The Reclamation Ledger</h2>
+  <p class="section-subtitle">Forgotten projects and erased chapters — what was taken from us, and the blueprint to build it back.</p>
+  <div class="ledger-grid">
+    <div class="ledger-card"><div class="ledger-era">Tulsa, Oklahoma · 1921</div><h3>Black Wall Street</h3><p>Greenwood was the wealthiest Black community in America — banks, hotels, theaters, law offices. In two days it was burned to the ground by a white mob; 300 dead, 10,000 homeless, not one perpetrator prosecuted.</p><div class="ledger-lesson">Lesson: Wealth without legal and political defense can be destroyed overnight. We rebuild with both.</div></div>
+    <div class="ledger-card"><div class="ledger-era">Rosewood, Florida · 1923</div><h3>The Rosewood Massacre</h3><p>A thriving self-sufficient Black town erased in a week of racial terror. The survivors' descendants won reparations in 1994 — the first time a state compensated victims of racial violence.</p><div class="ledger-lesson">Lesson: Documentation wins reparations. Archive everything.</div></div>
+    <div class="ledger-card"><div class="ledger-era">New York City · 1857</div><h3>Seneca Village</h3><p>A prosperous Black landowning community razed by eminent domain to build Central Park. 1,600 residents displaced; the land is now worth billions.</p><div class="ledger-lesson">Lesson: Land is leverage. Our land trust comes first, celebration second.</div></div>
+    <div class="ledger-card"><div class="ledger-era">Wilmington, NC · 1898</div><h3>The Only Coup on US Soil</h3><p>A duly elected biracial government overthrown by force. Black officials expelled, the Black press burned, dozens killed — the only successful coup d'état in American history.</p><div class="ledger-lesson">Lesson: Political wins must be defended institutionally, not just electorally.</div></div>
+    <div class="ledger-card"><div class="ledger-era">Philadelphia · 1985</div><h3>The MOVE Bombing</h3><p>A city dropped a bomb on a residential block, killing 11 — including 5 children — and destroying 61 homes. No city official was ever criminally charged.</p><div class="ledger-lesson">Lesson: State violence without accountability repeats. Memory is resistance.</div></div>
+    <div class="ledger-card"><div class="ledger-era">Washington, DC · 1874</div><h3>The Freedmen's Bank Collapse</h3><p>60,000 newly freed depositors lost their savings when the Freedman's Savings Bank failed — a betrayal that seeded a century of distrust in financial institutions.</p><div class="ledger-lesson">Lesson: We must own the rails. Community treasury, community custody.</div></div>
+  </div>
+
+  <div class="rebuild-panel">
+    <h3>Rebuild Black Wall Street — The Execution Plan</h3>
+    <p class="sub">Greenwood proved we can build an economy of our own. This time, we build it fireproof: distributed across cities, secured on-chain, and owned by its members forever.</p>
+    <div class="rebuild-steps">
+      <div class="rebuild-step"><span class="step-num">01</span><h4>Land &amp; Legal Trust</h4><p>Form a community land trust holding property in perpetuity. Eminent domain cannot take what no individual owns.</p></div>
+      <div class="rebuild-step"><span class="step-num">02</span><h4>Digital Marketplace</h4><p>Launch the Tomorrowland Market (below) — Black-owned businesses discoverable worldwide, transacting in POL and Commons Coin.</p></div>
+      <div class="rebuild-step"><span class="step-num">03</span><h4>Treasury Microgrants</h4><p>Fund member businesses from the Community Treasury. Recipients repay in revenue share, recycling capital forever.</p></div>
+      <div class="rebuild-step"><span class="step-num">04</span><h4>Cooperative Governance</h4><p>One member, one vote. Treasury allocation, grants, and expansion decided on-chain — never by a gatekeeper.</p></div>
+      <div class="rebuild-step"><span class="step-num">05</span><h4>Physical Anchors</h4><p>Convert digital treasury wins into real addresses: co-working halls, markets, and credit unions in every hub city.</p></div>
+      <div class="rebuild-step"><span class="step-num">06</span><h4>The Long Memory</h4><p>Every venture documented in the Ledger. The next generation inherits a playbook, not just a memory of loss.</p></div>
+    </div>
+  </div>
+
+  <div class="identity-note">
+    <h4>Identity &amp; Status — Reclaiming How We Are Named</h4>
+    <p>From "Negro" to "Colored" to "Black" to "African American" — every label was assigned within a legal system that once classified us as property. This track studies the documented history of racial classification in US law and census records, examines indigenous identity claims and lineage research, and equips members to correct their records with evidence. Begin with <a href="#academy">the Academy's</a> Black Economics Reading Path, then request the Identity &amp; Status study kit via ORACLE (bottom right).</p>
+  </div>
+</section>
+
+<!-- JUSTICE — THE OVERLOOKED -->
+<section class="justice-section" id="justice">
+  <h2 class="section-title">The Overlooked</h2>
+  <p class="section-subtitle">Justice &amp; remembrance for the lives mainstream media forgot — and a fund for the families still fighting.</p>
+  <div class="justice-grid" id="justiceGrid">
+    <div class="memorial-card"><div class="memorial-name">Emmett Till</div><div class="memorial-meta">Money, Mississippi · 1955 · Age 14</div><p class="memorial-desc">Lynched after an accusation later admitted to be false. His killers confessed publicly after acquittal — protected by double jeopardy.</p><span class="status-pill status-none">Killers never punished</span></div>
+    <div class="memorial-card"><div class="memorial-name">Fred Hampton</div><div class="memorial-meta">Chicago, Illinois · 1969 · Age 21</div><p class="memorial-desc">Assassinated in his bed in a pre-dawn raid coordinated between Chicago police and the FBI while leading breakfast programs and a Rainbow Coalition.</p><span class="status-pill status-cold">State assassination</span></div>
+    <div class="memorial-card"><div class="memorial-name">The 16th Street Girls</div><div class="memorial-meta">Birmingham, Alabama · 1963 · Ages 11–14</div><p class="memorial-desc">Addie Mae Collins, Cynthia Wesley, Carole Robertson, Carol Denise McNair — killed in the church bombing. One bomber walked free for 14 years; the last conviction came in 2002.</p><span class="status-pill status-cold">Justice delayed decades</span></div>
+    <div class="memorial-card"><div class="memorial-name">Eleanor Bumpurs</div><div class="memorial-meta">Bronx, New York · 1984 · Age 66</div><p class="memorial-desc">A grandmother shot twice by police during an eviction over $96 in rent. The officer was acquitted; the city settled for $200,000.</p><span class="status-pill status-none">No conviction</span></div>
+    <div class="memorial-card"><div class="memorial-name">Yusef Hawkins</div><div class="memorial-meta">Brooklyn, New York · 1989 · Age 16</div><p class="memorial-desc">Surrounded and shot by a mob of up to 30 youths who mistook him for someone else. Most participants were never charged.</p><span class="status-pill status-cold">Most suspects never charged</span></div>
+    <div class="memorial-card"><div class="memorial-name">The MOVE 11</div><div class="memorial-meta">Philadelphia · 1985 · 5 children among the dead</div><p class="memorial-desc">Eleven people, five of them children, killed when the city bombed a residential row house and let the fire burn 61 homes to the ground.</p><span class="status-pill status-none">No criminal charges</span></div>
+  </div>
+
+  <div class="family-fund">
+    <h3>The Family Fund</h3>
+    <div class="fund-amount">◎<span id="fundAmount">12,480</span> POL</div>
+    <div class="fund-label">Reserved for families of the overlooked</div>
+    <p>When a family faces burial costs, legal fees, or the slow machinery of an ignored case, this fund answers. Administered transparently from the Community Treasury on Polygon — every disbursement public, every recipient verified by community stewards.</p>
+    <div class="donate-options">
+      <button class="donate-btn" onclick="fundDonate(5)">5 POL</button>
+      <button class="donate-btn" onclick="fundDonate(25)">25 POL</button>
+      <button class="donate-btn" onclick="fundDonate(100)">100 POL</button>
+      <button class="donate-btn gold" onclick="fundCustom()">Custom</button>
+    </div>
+    <div style="margin-top:1rem"><input class="wallet-input" id="fundCustomAmt" type="number" step="0.01" min="0.01" placeholder="Custom amount (POL)" style="max-width:260px;margin:0 auto"></div>
+  </div>
+
+  <div class="report-case">
+    <h4>Report an Overlooked Case</h4>
+    <p style="font-size:.85rem;opacity:.7;margin-bottom:1.2rem">Know a death the media ignored while suspects walk free? Submit it for steward review. Verified cases join the wall and qualify the family for the Fund.</p>
+    <input type="text" id="caseName" placeholder="Name of the deceased">
+    <input type="text" id="caseMeta" placeholder="Location · Year · Age">
+    <textarea id="caseDesc" rows="3" placeholder="What happened, and what has (not) been done…"></textarea>
+    <button onclick="submitCase()">Submit for Review</button>
+  </div>
+</section>
+
+<!-- TREASURY COMMONS -->
+<section class="commons-section">
+  <div class="commons-card">
+    <h3>Treasury Commons</h3>
+    <p class="desc">Prototype budget allocations for digitization, curriculum design and steward stipends can be surfaced here as the project matures.</p>
+    <div class="commons-amount">$248,000</div>
+    <div class="commons-label">Illustrative Community Treasury</div>
+    <p class="commons-note">Treasury actions remain disabled until contribution flows are implemented.</p>
+    <div class="commons-actions">
+      <button class="commons-btn green" onclick="toast('Sponsor-a-shelf activates when contribution flows go live.')">Sponsor a shelf</button>
+      <button class="commons-btn gold" onclick="toast('Fellowship funding activates when contribution flows go live.')">Fund a fellowship</button>
+    </div>
+  </div>
+</section>
+
+<!-- BLUEPRINT -->
+<section class="blueprint-section" id="blueprint">
+  <div class="blueprint-container">
+    <h2 class="section-title">The Blueprint</h2>
+    <p class="section-subtitle">A phased roadmap from memorial archive to member-governed institution.</p>
+    <div class="blueprint-timeline">
+      <div class="timeline-item"><div class="timeline-content"><div class="timeline-year">Phase 01</div><div class="timeline-title">Archive &amp; Collect</div><div class="timeline-desc">Launch the pioneer wall, reading shelf and registry for early collaborators and contributors.</div></div></div>
+      <div class="timeline-item"><div class="timeline-content"><div class="timeline-year">Phase 02</div><div class="timeline-title">Teach &amp; Organize</div><div class="timeline-desc">Publish learning pathways, reading circles and facilitator kits for distributed community study.</div></div></div>
+      <div class="timeline-item"><div class="timeline-content"><div class="timeline-year">Phase 03</div><div class="timeline-title">Build Shared Ownership</div><div class="timeline-desc">Coordinate grants, treasury experiments and partnerships that fund culture as infrastructure.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="community-section" id="community">
+  <h2 class="section-title">Community Signal</h2>
+  <p class="section-subtitle">Prototype metrics showing the shape of a growing movement ecosystem.</p>
+  <div class="community-grid">
+    <div class="community-stat"><span class="number">44</span><span class="label">Study Circles</span></div>
+    <div class="community-stat"><span class="number">19</span><span class="label">Archive Stewards</span></div>
+    <div class="community-stat"><span class="number">7</span><span class="label">Partner Libraries</span></div>
+  </div>
+</section>
+
+<!-- MARKETPLACE -->
+<section class="market-section" id="market">
+  <h2 class="section-title">Tomorrowland Market</h2>
+  <p class="section-subtitle">Black-owned businesses, community-verified, transacting in POL and Commons Coin.</p>
+  <div class="market-grid">
+    <div class="biz-card"><span class="biz-verified">✓ Verified</span><div class="biz-icon">☕</div><h3>Sankofa Roast Co.</h3><div class="biz-cat">Coffee &amp; Goods</div><p>Single-origin beans from Ethiopian cooperatives, roasted in Atlanta. 5% of every bag funds the Family Fund.</p><div class="loc">📍 Atlanta, GA · Ships worldwide</div></div>
+    <div class="biz-card"><span class="biz-verified">✓ Verified</span><div class="biz-icon">🧵</div><h3>Indigo Threadworks</h3><div class="biz-cat">Apparel</div><p>Heritage indigo dyeing revived as a modern streetwear house. Worker-owned; profits shared across the shop floor.</p><div class="loc">📍 Charleston, SC</div></div>
+    <div class="biz-card"><span class="biz-verified">✓ Verified</span><div class="biz-icon">🌱</div><h3>Okra &amp; Sun Farms</h3><div class="biz-cat">Agriculture</div><p>Regenerative farm collective supplying produce boxes to 400 families across three states.</p><div class="loc">📍 Albany, GA</div></div>
+    <div class="biz-card"><span class="biz-verified">✓ Verified</span><div class="biz-icon">💻</div><h3>Dark Matter Dev Studio</h3><div class="biz-cat">Technology</div><p>Software studio training and hiring Academy graduates. Built the Ledger's digital archive infrastructure.</p><div class="loc">📍 Remote · Global</div></div>
+    <div class="biz-card"><span class="biz-verified">✓ Verified</span><div class="biz-icon">📚</div><h3>Freedom Paper Books</h3><div class="biz-cat">Publishing</div><p>Independent press printing affordable editions of the Academy canon for schools and study circles.</p><div class="loc">📍 Chicago, IL</div></div>
+    <div class="biz-card"><span class="biz-verified">✓ Verified</span><div class="biz-icon">🛠️</div><h3>Greenwood Builders</h3><div class="biz-cat">Construction Co-op</div><p>Black-owned construction cooperative restoring homes in historic Black neighborhoods — named for what we rebuild.</p><div class="loc">📍 Tulsa, OK</div></div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem"><button class="cta-secondary" onclick="toast('Vendor applications open after Registry verification. Ask ORACLE how to apply.')">Apply as a Vendor</button></div>
+</section>
+
+<!-- COMMONS COIN -->
+<section class="coin-section" id="coin">
+  <h2 class="section-title">The Commons Coin</h2>
+  <p class="section-subtitle">One token, one mission — fund the work, forever. Deployed on Polygon.</p>
+  <div class="coin-panel">
+    <div>
+      <span class="coin-ticker">$COMMONS · POLYGON</span>
+      <h3>Culture as Infrastructure</h3>
+      <p>The Commons Coin converts attention into endowment. Every marketplace purchase, every Academy download, every treasury donation flows through $COMMONS — and a fraction of every flow compounds back into the Community Treasury and the Family Fund.</p>
+      <ul class="coin-facts">
+        <li><b>Network:</b> Polygon (low fees, fast finality)</li>
+        <li><b>Supply:</b> 21,000,000 — fixed forever</li>
+        <li><b>Governance:</b> 1 member, 1 vote — not 1 coin, 1 vote</li>
+        <li><b>Transparency:</b> All flows public on-chain</li>
+      </ul>
+    </div>
+    <div>
+      <div class="alloc-row"><div class="alloc-head"><span>Community Treasury</span><b>40%</b></div><div class="alloc-track"><div class="alloc-fill" style="width:40%"></div></div></div>
+      <div class="alloc-row"><div class="alloc-head"><span>Education Endowment</span><b>25%</b></div><div class="alloc-track"><div class="alloc-fill" style="width:25%"></div></div></div>
+      <div class="alloc-row"><div class="alloc-head"><span>Family Fund (The Overlooked)</span><b>20%</b></div><div class="alloc-track"><div class="alloc-fill" style="width:20%"></div></div></div>
+      <div class="alloc-row"><div class="alloc-head"><span>Builders &amp; Stewards</span><b>15%</b></div><div class="alloc-track"><div class="alloc-fill" style="width:15%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section class="admin-section" id="admin">
+  <div class="admin-header">
+    <h2>Admin Console</h2>
+    <p>Restricted — treasury &amp; registry oversight</p>
+    <div class="admin-badge"><span class="pulse-dot"></span>Admin Mode</div>
+  </div>
+  <div class="admin-lock" id="adminLock">
+    <h3 style="font-family:'Orbitron',sans-serif;color:var(--admin);margin-bottom:.5rem">Enter Access Code</h3>
+    <p style="opacity:.7;font-size:.9rem">This console manages treasury settings and reviews registry entries.</p>
+    <input type="password" id="adminCode" placeholder="ACCESS CODE" onkeydown="if(event.key==='Enter')unlockAdmin()">
+    <button onclick="unlockAdmin()">Unlock</button>
+    <div class="hint">Demo hint: the code is TOMORROWLAND</div>
+  </div>
+  <div class="admin-grid" id="adminPanel" style="display:none">
+    <div class="admin-card"><h3>Treasury Balance</h3><div class="big-number">◎<span id="adminTreasury">4,237.00</span> POL</div><p>Polygon multisig · 3-of-5 signers · all movements public</p></div>
+    <div class="admin-card"><h3>Total Downloads</h3><div class="big-number" id="adminDownloads">3,902</div><p>Each download adds a 0.05 POL micro-donation</p></div>
+    <div class="admin-card"><h3>Registered Members</h3><div class="big-number" id="adminMembers">1,248</div><p>Across 37 countries</p></div>
+    <div class="admin-card" style="grid-column:1/-1"><h3>Recent Registry Entries</h3><table class="admin-table"><thead><tr><th>Name</th><th>Wallet</th><th>Status</th></tr></thead><tbody id="adminRegRows"><tr><td>A. Nkrumah</td><td>0x7a3f…8f2k</td><td style="color:var(--green)">Verified</td></tr><tr><td>M. Garvey</td><td>0x91c2…x91a</td><td style="color:var(--green)">Verified</td></tr><tr><td>I. Wilkerson</td><td>0xd40e…p04d</td><td style="color:var(--gold)">Pending</td></tr></tbody></table></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-logo">Blackpower.Tomorrowland</div>
+    <p style="opacity:.7">Prototype cultural infrastructure for archiving memory and rehearsing liberated futures.</p>
+    <div class="footer-links">
+      <a href="#pioneers">Pioneers</a><a href="#registry">Registry</a><a href="#academy">Academy</a><a href="#ledger">Ledger</a><a href="#justice">Justice</a><a href="#blueprint">Blueprint</a><a href="javascript:void(0)" onclick="openAdmin()">Admin</a>
+    </div>
+    <div class="footer-bottom">© 2026 Tomorrowland. Built as a concept experience for community stewardship.</div>
+  </div>
+</footer>
+
+<!-- WALLET MODAL -->
+<div class="modal-overlay" id="walletModal" onclick="if(event.target===this)closeModal('walletModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('walletModal')">×</button>
+    <h3>Connect Wallet</h3>
+    <p>Choose a Polygon wallet to connect. Demo mode — wire to real SDKs in production.</p>
+    <div class="wallet-options">
+      <button class="wallet-option" onclick="connectWallet('MetaMask')">🦊 MetaMask</button>
+      <button class="wallet-option" onclick="connectWallet('WalletConnect')">🔗 WalletConnect</button>
+      <button class="wallet-option" onclick="connectWallet('Coinbase Wallet')">🔵 Coinbase Wallet</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK PREVIEW MODAL -->
+<div class="modal-overlay book-preview-modal" id="bookModal" onclick="if(event.target===this)closeModal('bookModal')">
+  <div class="modal" id="bookModalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ORACLE AI -->
+<button class="oracle-fab" onclick="toggleOracle()" title="Ask ORACLE">🧠</button>
+<div class="oracle-panel" id="oraclePanel">
+  <div class="oracle-head"><span class="o-dot"></span><div><h4>ORACLE</h4><span>Genius network assistant · Always on</span></div></div>
+  <div class="oracle-body" id="oracleBody">
+    <div class="o-msg ai">Peace. I am ORACLE — the network's collective genius engine. I can break any goal into steps, connect you to collaborators, route you to the right Academy path, or explain the Treasury, Coin, Market, Ledger, and Family Fund. What are we building today?</div>
+  </div>
+  <div class="o-chips">
+    <button class="o-chip" onclick="askOracle('How do I rebuild Black Wall Street?')">Rebuild Black Wall Street</button>
+    <button class="o-chip" onclick="askOracle('Find me collaborators')">Find collaborators</button>
+    <button class="o-chip" onclick="askOracle('Which study path should I take?')">Study paths</button>
+    <button class="o-chip" onclick="askOracle('How does the Family Fund work?')">Family Fund</button>
+  </div>
+  <div class="oracle-input">
+    <input type="text" id="oracleInput" placeholder="Ask ORACLE anything…" onkeydown="if(event.key==='Enter')sendOracle()">
+    <button onclick="sendOracle()">Ask</button>
+  </div>
+</div>
+<script>
+/* ═══════ PIONEERS ═══════ */
+const PIONEERS=[
+ ["Marcus Garvey","1887–1940","Up, you mighty race, accomplish what you will."],
+ ["Harriet Tubman","1822–1913","I freed a thousand slaves. I could have freed a thousand more."],
+ ["Frederick Douglass","1818–1895","Without a struggle, there can be no progress."],
+ ["W.E.B. Du Bois","1868–1963","The problem of the twentieth century is the problem of the color line."],
+ ["Ida B. Wells","1862–1931","The way to right wrongs is to turn the light of truth upon them."],
+ ["Madam C.J. Walker","1867–1919","I got my start by giving myself a start."],
+ ["Malcolm X","1925–1965","Education is the passport to the future."],
+ ["Kwame Nkrumah","1909–1972","We face neither East nor West; we face forward."]];
+document.getElementById('pioneerGrid').innerHTML=PIONEERS.map(p=>
+ `<div class="pioneer-card"><div class="pioneer-info"><div class="pioneer-name">${p[0]}</div><div class="pioneer-era">${p[1]}</div><div class="pioneer-quote">“${p[2]}”</div></div></div>`).join('');
+
+/* ═══════ HERO COLLAGE ═══════ */
+(function(){
+ const c=document.getElementById('collage');const icons=['✊🏿','📖','🌍','🥁','👑','🎺','📚','🖤'];
+ for(let i=0;i<14;i++){const d=document.createElement('div');d.className='collage-img';
+  const s=60+Math.random()*90;
+  d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*92}%;top:${Math.random()*88}%;font-size:${s*.4}px;animation-delay:${Math.random()*6}s;background:rgba(42,42,42,.6)`;
+  d.textContent=icons[i%icons.length];c.appendChild(d);}
+})();
+
+/* ═══════ BOOKS: 24 ═══════ */
+const BOOKS=[
+{t:"The Autobiography of Malcolm X",a:"Malcolm X & Alex Haley",y:1965,c:"History",g:["#8a5a2b","#3d2c14"],d:"The definitive life story of Malcolm X — from hardship to transformation to one of the most influential voices of the twentieth century.",toc:["Nightmare","Mascot","Homeboy","Mecca","The Messenger and the Movement"]},
+{t:"The New Jim Crow",a:"Michelle Alexander",y:2010,c:"History",g:["#5b3a3a","#241414"],d:"A landmark study of mass incarceration as a modern system of racial control in the age of colorblindness.",toc:["The Rebirth of Caste","The Lockdown","The Color of Justice","The Cruel Hand","The New Jim Crow Today"]},
+{t:"The Warmth of Other Suns",a:"Isabel Wilkerson",y:2010,c:"History",g:["#b0782a","#4a2f10"],d:"The epic story of the Great Migration — six million Black Americans who fled the Jim Crow South and transformed the nation.",toc:["The Decision","The Departure","The North","The Promise","The Legacy"]},
+{t:"Barracoon",a:"Zora Neale Hurston",y:2018,c:"History",g:["#3f5a5a","#162525"],d:"The never-before-published account of Cudjo Lewis, one of the last survivors of the Atlantic slave trade, in his own words.",toc:["Arrival","The Interview Begins","King of Dahomey","The Middle Passage","Freedom at Last"]},
+{t:"The Souls of Black Folk",a:"W.E.B. Du Bois",y:1903,c:"History",g:["#6b4a8a","#2a1c3d"],d:"Du Bois's foundational essays on race, double consciousness, and the color line that would define the American century.",toc:["Of Our Spiritual Strivings","Of the Dawn of Freedom","Of the Meaning of Progress","Of the Training of Black Men","The After-Thought"]},
+{t:"Capitalism and Slavery",a:"Eric Williams",y:1944,c:"Economics",g:["#7a6a2b","#33290e"],d:"The groundbreaking argument that slavery built the foundations of Western capitalism — and that abolition followed economic interest.",toc:["The Origins of Negro Slavery","The Triangular Trade","British Capitalism & the West Indies","The Industrial Revolution","The Road to Abolition"]},
+{t:"The Color of Money",a:"Mehrsa Baradaran",y:2017,c:"Economics",g:["#2b6a5a","#0e3329"],d:"How the racial wealth gap was engineered through banking policy — and why Black banks alone cannot close it.",toc:["The Freedman's Bank","Jim Crow Credit","The FHA and Redlining","Black Capitalism","The Wealth Gap Today"]},
+{t:"Black Fortunes",a:"Shomari Wills",y:2018,c:"Economics",g:["#8a7a2b","#3d3510"],d:"The untold stories of the first Black millionaires in America — Madam C.J. Walker, O.W. Gurley, and the pioneers of Black wealth.",toc:["The Titan of Black Wall Street","The First Self-Made Millionaire","Real Estate Empires","The Money Trust","Legacy of the Fortunate"]},
+{t:"The Half Has Never Been Told",a:"Edward E. Baptist",y:2014,c:"Economics",g:["#5a4a3a","#241d14"],d:"Slavery and the making of American capitalism — how forced labor drove the nation's rise to economic superpower.",toc:["The Whipping Machine","The Cotton Kingdom","The Expansion","The Politics of Slavery","The War and Its Echoes"]},
+{t:"Black Skin, White Masks",a:"Frantz Fanon",y:1952,c:"Philosophy",g:["#4a4a4a","#1c1c1c"],d:"Fanon's searing psychological analysis of the dehumanizing effects of colonization on both the colonized and the colonizer.",toc:["The Negro and Language","The Woman of Color and the White Man","The Fact of Blackness","The Negro and Recognition","By Way of Conclusion"]},
+{t:"The Wretched of the Earth",a:"Frantz Fanon",y:1961,c:"Philosophy",g:["#6a3a2b","#2e160e"],d:"The revolutionary manifesto on decolonization — the handbook of liberation movements across the globe.",toc:["On Violence","Grandeur and Weakness of Spontaneity","The Pitfalls of National Consciousness","On National Culture","Conclusion"]},
+{t:"Race Matters",a:"Cornel West",y:1993,c:"Philosophy",g:["#3a5a8a","#16253d"],d:"West's classic essays on race, democracy, and moral courage — a call to honest conversation and prophetic action.",toc:["Nihilism in Black America","The Pitfalls of Racial Reasoning","Beyond Black Nationalism","Malcolm X and Black Rage","Democracy and the Future"]},
+{t:"Sister Outsider",a:"Audre Lorde",y:1984,c:"Philosophy",g:["#8a3a6a","#3d162e"],d:"Lorde's essential essays and speeches on intersectionality, difference, and the transformation of silence into language and action.",toc:["The Transformation of Silence","The Master's Tools","Poetry Is Not a Luxury","Uses of the Erotic","Learning from the 60s"]},
+{t:"Black Software",a:"Charlton L. McIlwain",y:2019,c:"Technology",g:["#2b4a6a","#0e1e2e"],d:"The untold story of the internet and Black communities — from AfroNet message boards to digital activism and beyond.",toc:["The Pre-History of Black Online Life","AfroNet","The Digital Divide Wars","Black People and the Web","The Movement Goes Digital"]},
+{t:"Algorithms of Oppression",a:"Safiya Umoja Noble",y:2018,c:"Technology",g:["#6a2b4a","#2e0e1e"],d:"How search engines reinforce racism — a critical examination of big data, bias, and the algorithms that shape our world.",toc:["A Society, Searching","Searching for Black Girls","Searching for People and Communities","The Future of Knowledge","Conclusion"]},
+{t:"Race After Technology",a:"Ruha Benjamin",y:2019,c:"Technology",g:["#3a6a3a","#162e16"],d:"Abolitionist tools for the New Jim Code — how emerging technologies can encode or dismantle racial hierarchy.",toc:["The New Jim Code","Default Discrimination","Coded Exposure","Technological Benevolence","Retooling Solidarity"]},
+{t:"Distributed Blackness",a:"André Brock Jr.",y:2020,c:"Technology",g:["#5a2b6a","#250e2e"],d:"African American cybercultures — a theorization of Black digital practice, from Black Twitter to joyful resistance online.",toc:["Technocultural Studies","Black Cyberculture","Black Twitter","Ratchet and the Digital","Conclusion"]},
+{t:"Things Fall Apart",a:"Chinua Achebe",y:1958,c:"Fiction",g:["#8a4a2b","#3d1e10"],d:"The most widely read novel in African literature — the story of Okonkwo and a world transformed by colonial arrival.",toc:["Part One: Umuofia","The Feast of the New Yam","The Coming of the Locusts","The White Man's Burden","The Commissioner"]},
+{t:"Beloved",a:"Toni Morrison",y:1987,c:"Fiction",g:["#6a3a5a","#2e1625"],d:"Morrison's Pulitzer Prize-winning masterpiece — Sethe, a haunting, and the unforgivable memory of slavery.",toc:["124 Was Spiteful","The Arrival of Beloved","Sweet Home","The Clearing","124 Was Quiet"]},
+{t:"Mumbo Jumbo",a:"Ishmael Reed",y:1972,c:"Fiction",g:["#b0882a","#4a3a10"],d:"A freewheeling, genre-smashing satire — the Jes Grew epidemic, the Wallflower Order, and the conspiracy against Black culture.",toc:["The Jes Grew Carriers","Detective PaPa LaBas","The Wallflower Order","The Text is Missing","Epilogue"]},
+{t:"Kindred",a:"Octavia E. Butler",y:1979,c:"Fiction",g:["#3a3a6a","#16162e"],d:"Butler's time-travel classic — Dana is pulled between 1976 California and a Maryland slave plantation to save her own lineage.",toc:["The River","The Fire","The Fall","The Fight","The Rope"]},
+{t:"Medical Apartheid",a:"Harriet A. Washington",y:2006,c:"Science",g:["#6a2b2b","#2e0e0e"],d:"The dark history of medical experimentation on Black Americans from colonial times to the present — and the case for bioethics reform.",toc:["The Birth of American Gynecology","The Tuskegee Experiment","The Radiation Experiments","The Prison Laboratory","The New Frontier"]},
+{t:"Black Apollo of Science",a:"Kenneth R. Manning",y:1983,c:"Science",g:["#2b5a6a","#0e252e"],d:"The Pulitzer-winning biography of Ernest Everett Just, the pioneering Black biologist who challenged the foundations of cell theory.",toc:["Charleston Beginnings","Howard and Dartmouth","The Marine Laboratory","Europe and Exile","Legacy of a Scientist"]},
+{t:"The Disordered Cosmos",a:"Chanda Prescod-Weinstein",y:2021,c:"Science",g:["#4a2b6a","#1e0e2e"],d:"A journey into dark matter, spacetime, and dreams deferred — particle physics through the lens of a Black feminist scientist.",toc:["The Physics of Melanin","Dark Matter","The Cosmological Constant","Black Feminist Science","The Future of Physics"]}];
+
+/* ═══════ GUIDES: 6 ═══════ */
+const GUIDES=[
+{t:"Black Economics Reading Path",w:12,d:"From Capitalism and Slavery to The Color of Money — a 12-week deep dive into the political economy of race and wealth.",books:"Capitalism and Slavery · The Color of Money · Black Fortunes · The Half Has Never Been Told"},
+{t:"Decolonizing the Mind: Philosophy Track",w:10,d:"Fanon, West, Lorde — ten weeks of critical philosophy on colonization, consciousness, and liberation.",books:"Black Skin, White Masks · The Wretched of the Earth · Race Matters · Sister Outsider"},
+{t:"Tech & Liberation: Digital Frontier",w:8,d:"Eight weeks examining algorithms, bias, and Black digital futures — from AfroNet to the New Jim Code.",books:"Black Software · Algorithms of Oppression · Race After Technology · Distributed Blackness"},
+{t:"The Civil Rights Canon",w:16,d:"Sixteen weeks through the essential history — Malcolm X, mass incarceration, the Great Migration, and more.",books:"Autobiography of Malcolm X · The New Jim Crow · The Warmth of Other Suns · Barracoon"},
+{t:"African Diaspora Literature",w:14,d:"Fourteen weeks of fiction across the diaspora — Achebe, Morrison, Reed, and Butler.",books:"Things Fall Apart · Beloved · Mumbo Jumbo · Kindred"},
+{t:"Building Black Wealth: Theory to Practice",w:10,d:"Ten weeks from economic theory to community wealth-building — culminating in treasury governance practice.",books:"Black Fortunes · The Color of Money · The Half Has Never Been Told · Capitalism and Slavery"}];
+
+const CATEGORIES=["All","History","Economics","Philosophy","Technology","Fiction","Science"];
+let activeCat="All";
+
+/* ═══════ STATE ═══════ */
+let treasury=4237, downloads=3902;
+
+/* ═══════ UI HELPERS ═══════ */
+let toastTimer;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200);}
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
+function toggleMenu(){document.getElementById('navLinks').classList.toggle('open');}
+function closeMenu(){document.getElementById('navLinks').classList.remove('open');}
+function closeModal(id){document.getElementById(id).classList.remove('active');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('walletModal');closeModal('bookModal');}});
+
+/* ═══════ TREASURY ═══════ */
+function refreshTreasury(){
+ const v=treasury.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+ document.getElementById('treasuryAmount').textContent=v;
+ const a=document.getElementById('adminTreasury');if(a)a.textContent=v;
+}
+function donate(amt){
+ treasury+=amt;refreshTreasury();
+ const el=document.getElementById('treasuryAmount');
+ el.style.color='#f5f5dc';setTimeout(()=>{el.style.transition='color .8s';el.style.color='';},60);
+ toast(`Thank you — ${amt.toFixed(2)} POL added to the Community Treasury.`);
+}
+function donateCustom(){
+ const v=parseFloat(document.getElementById('customAmt').value);
+ if(!v||v<=0){toast('Enter a valid POL amount.');return;}
+ donate(v);document.getElementById('customAmt').value='';
+}
+function bumpDownloads(){downloads++;const d=document.getElementById('dlCount');if(d)d.textContent=downloads.toLocaleString();const a=document.getElementById('adminDownloads');if(a)a.textContent=downloads.toLocaleString();}
+
+/* ═══════ LIBRARY ═══════ */
+function renderFilters(){
+ document.getElementById('filterTags').innerHTML=CATEGORIES.map(c=>
+  `<button class="filter-tag ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</button>`).join('');
+}
+function setCat(c){activeCat=c;renderFilters();renderBooks();}
+function renderBooks(){
+ const q=document.getElementById('searchInput').value.toLowerCase().trim();
+ const list=BOOKS.filter(b=>(activeCat==='All'||b.c===activeCat)&&(!q||b.t.toLowerCase().includes(q)||b.a.toLowerCase().includes(q)||b.d.toLowerCase().includes(q)));
+ document.getElementById('resultCount').textContent=`${list.length} OF ${BOOKS.length} WORKS`;
+ document.getElementById('bookGrid').innerHTML=list.map(b=>{
+  const i=BOOKS.indexOf(b);
+  return `<div class="book-card">
+   <div class="book-cover"><div class="book-cover-bg" style="background:linear-gradient(135deg,${b.g[0]},${b.g[1]})"></div>
+    <div class="book-cover-content"><h4>${b.t}</h4><div class="author-name">${b.a}</div></div></div>
+   <div class="book-info">
+    <div class="book-meta"><span class="book-tag">${b.c}</span><span class="book-tag">${b.y}</span></div>
+    <div class="book-desc">${b.d}</div>
+    <div class="book-actions">
+     <button class="btn-small btn-download" onclick="downloadBook(${i})">⬇ Download</button>
+     <button class="btn-small btn-preview" onclick="openBookPreview(${i})">Preview</button>
+    </div></div></div>`;
+ }).join('')||'<p style="grid-column:1/-1;text-align:center;opacity:.5">No works match your search.</p>';
+}
+function openBookPreview(i){
+ const b=BOOKS[i];
+ document.getElementById('bookModalContent').innerHTML=`
+  <button class="modal-close" onclick="closeModal('bookModal')">×</button>
+  <div class="preview-header">
+   <div class="preview-cover" style="background:linear-gradient(135deg,${b.g[0]},${b.g[1]})"><span>${b.t[0]}</span></div>
+   <div class="preview-info"><h4>${b.t}</h4><div class="author">${b.a}</div><div class="year">${b.y} · ${b.c}</div></div>
+  </div>
+  <div class="preview-body"><p>${b.d}</p>
+   <h4 style="color:var(--gold);font-size:.85rem;text-transform:uppercase;letter-spacing:1px;margin-top:1rem">Chapter Listing</h4>
+   <ul class="chapter-list">${b.toc.map((c,n)=>`<li>Chapter ${n+1} — ${c}<span>PDF</span></li>`).join('')}</ul>
+  </div>
+  <button class="cta-primary" style="width:100%;margin-top:1rem" onclick="downloadBook(${i});closeModal('bookModal')">Download Educational Archive</button>`;
+ document.getElementById('bookModal').classList.add('active');
+ document.body.style.overflow='hidden';
+}
+
+/* ═══════ GUIDES ═══════ */
+function renderGuides(){
+ document.getElementById('guideGrid').innerHTML=GUIDES.map((g,i)=>`
+  <div class="guide-card"><h3>${g.t}</h3><p>${g.d}</p>
+   <div class="guide-meta"><span>⏱ ${g.w} weeks</span><span>📖 ${g.books.split('·').length} core texts</span></div>
+   <p style="font-size:.78rem;opacity:.5;border-left:3px solid var(--gold);padding-left:.8rem;margin-bottom:1.2rem">${g.books}</p>
+   <button class="guide-download-btn" onclick="downloadGuide(${i})">Download Curriculum</button></div>`).join('');
+}
+
+/* ═══════ DOWNLOADS ═══════ */
+function saveTxt(name,content){
+ const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
+ document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);
+}
+function downloadBook(i){
+ const b=BOOKS[i];
+ saveTxt(b.t.replace(/[^a-z0-9]+/gi,'_')+'_archive.txt',
+`══════════════════════════════════════════════════════
+ BLACKPOWER.TOMORROWLAND — EDUCATIONAL ACADEMY
+ Digital Library Archive
+══════════════════════════════════════════════════════
+
+TITLE:    ${b.t}
+AUTHOR:   ${b.a}
+YEAR:     ${b.y}
+CATEGORY: ${b.c}
+
+ABOUT THIS WORK
+${b.d}
+
+TABLE OF CONTENTS
+${b.toc.map((c,n)=>`  ${n+1}. ${c}`).join('\n')}
+
+──────────────────────────────────────────────────────
+This educational archive is distributed free by the
+Academy. A micro-donation has been added to the
+Community Treasury in recognition of your download.
+100% of proceeds fund community education.
+──────────────────────────────────────────────────────`);
+ bumpDownloads();donate(0.05);
+ toast(`"${b.t}" archive downloaded · 0.05 POL added to treasury`);
+}
+function downloadGuide(i){
+ const g=GUIDES[i];
+ const weeks=Array.from({length:g.w},(_,n)=>
+`  Week ${n+1}: Assigned reading + chapter discussion
+    • Discussion question: How does this week's reading connect to our present moment?
+    • Reflection prompt: Write 200 words on one idea that challenged you.
+    • Community forum: Post your reflection in the Week ${n+1} thread.`).join('\n\n');
+ saveTxt(g.t.replace(/[^a-z0-9]+/gi,'_')+'_curriculum.txt',
+`══════════════════════════════════════════════════════
+ BLACKPOWER.TOMORROWLAND — EDUCATIONAL ACADEMY
+ Study Guide: ${g.t} (${g.w} Weeks)
+══════════════════════════════════════════════════════
+
+OVERVIEW
+${g.d}
+
+CORE TEXTS
+${g.books}
+
+CURRICULUM
+${weeks}
+
+──────────────────────────────────────────────────────
+100% of proceeds fund the Community Treasury.
+──────────────────────────────────────────────────────`);
+ bumpDownloads();donate(0.05);
+ toast(`"${g.t}" curriculum downloaded · 0.05 POL added to treasury`);
+}
+
+/* ═══════ WALLET / REGISTRY / ADMIN ═══════ */
+function openWalletModal(){document.getElementById('walletModal').classList.add('active');}
+function connectWallet(name){closeModal('walletModal');toast(`${name} connected (demo). Wire to the real ${name} SDK in production.`);}
+function registerMember(){
+ const n=document.getElementById('regName').value.trim(),w=document.getElementById('regWallet').value.trim();
+ if(!n||!w){toast('Enter your name and wallet address.');return;}
+ if(!/^0x[0-9a-fA-F]{40}$/.test(w)){toast('Enter a valid Polygon address (0x followed by 40 hex characters).');return;}
+ document.getElementById('regName').value='';document.getElementById('regWallet').value='';
+ const rows=document.getElementById('adminRegRows');
+ if(rows){const tr=document.createElement('tr');tr.innerHTML=`<td>${n}</td><td>${w.slice(0,6)}…${w.slice(-4)}</td><td style="color:var(--gold)">Pending</td>`;rows.prepend(tr);}
+ toast(`Welcome, ${n} — registration submitted for review.`);
+}
+function openAdmin(){
+ const s=document.getElementById('admin');s.classList.add('active');
+ s.scrollIntoView({behavior:'smooth'});
+}
+function unlockAdmin(){
+ const v=document.getElementById('adminCode').value.trim().toUpperCase();
+ if(v==='TOMORROWLAND'){
+  document.getElementById('adminLock').style.display='none';
+  document.getElementById('adminPanel').style.display='grid';
+  refreshTreasury();toast('Admin console unlocked.');
+ }else{toast('Invalid access code.');}
+}
+
+renderFilters();renderBooks();renderGuides();
+</script>
+<script>
+/* ═══════ FAMILY FUND ═══════ */
+let familyFund=12480;
+function refreshFund(){document.getElementById('fundAmount').textContent=familyFund.toLocaleString('en-US');}
+function fundDonate(amt){familyFund+=amt;treasury+=amt*0.1;refreshFund();refreshTreasury();toast(`${amt.toFixed(2)} POL pledged to the Family Fund. Thank you for standing with our families.`);}
+function fundCustom(){const v=parseFloat(document.getElementById('fundCustomAmt').value);if(!v||v<=0){toast('Enter a valid POL amount.');return;}fundDonate(v);document.getElementById('fundCustomAmt').value='';}
+function submitCase(){
+ const n=document.getElementById('caseName').value.trim(),m=document.getElementById('caseMeta').value.trim(),d=document.getElementById('caseDesc').value.trim();
+ if(!n||!d){toast('Enter the name and what happened.');return;}
+ const card=document.createElement('div');card.className='memorial-card';
+ card.innerHTML=`<div class="memorial-name">${n.replace(/</g,'&lt;')}</div><div class="memorial-meta">${(m||'Details pending').replace(/</g,'&lt;')}</div><p class="memorial-desc">${d.replace(/</g,'&lt;')}</p><span class="status-pill status-investigating">Community-submitted · Under steward review</span>`;
+ document.getElementById('justiceGrid').appendChild(card);
+ document.getElementById('caseName').value='';document.getElementById('caseMeta').value='';document.getElementById('caseDesc').value='';
+ toast('Case submitted. Stewards will verify before publication.');
+ card.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ═══════ ORACLE ═══════ */
+function toggleOracle(){document.getElementById('oraclePanel').classList.toggle('open');}
+function sendOracle(){const i=document.getElementById('oracleInput');const v=i.value.trim();if(!v)return;i.value='';askOracle(v);}
+function askOracle(q){
+ const body=document.getElementById('oracleBody');
+ body.insertAdjacentHTML('beforeend',`<div class="o-msg user">${q.replace(/</g,'&lt;')}</div>`);
+ body.scrollTop=body.scrollHeight;
+ setTimeout(()=>{body.insertAdjacentHTML('beforeend',`<div class="o-msg ai">${oracleReply(q)}</div>`);body.scrollTop=body.scrollHeight;},450);
+}
+function oracleReply(q){
+ const s=q.toLowerCase();
+ if(/rebuild|wall street|greenwood/.test(s))return 'Genius plan — Rebuild Black Wall Street:\n\n1. LEGAL SHELL — charter a community land trust + credit union first. Greenwood fell because wealth had no institutional armor.\n2. DIGITAL FIRST — open the Market section to verified vendors; route 5% of every sale to the Treasury.\n3. CAPITAL LOOP — Treasury microgrants fund members; revenue share refills the Treasury. Capital never leaves the family.\n4. GOVERN — one member, one vote on-chain. No single leader to jail, buy, or destroy.\n\nFull roadmap lives in the Reclamation Ledger ↑. Want me to break step 1 into this week\'s tasks?';
+ if(/collaborat|network|team|partner|connect/.test(s))return 'Network match, genius mode:\n\n• Your Builders lane → Dark Matter Dev Studio (Market) needs engineers.\n• Your Capital lane → Funders circle meets around the Treasury panel.\n• Your Voice lane → Educators run 44 study circles; one needs a facilitator.\n\nRegister your wallet in the Sovereign Registry with your skill in the name field (e.g. "Amara · Legal") — stewards match by registry tags. Tell me your skill and I\'ll point you to the exact lane.';
+ if(/study|learn|read|book|course|path/.test(s))return 'Pathfinder recommendation:\n\n• New here → The Civil Rights Canon (16 wks) for foundation.\n• Building wealth → Black Economics Reading Path (12 wks) — Williams to Baradaran.\n• Building tech → Tech & Liberation (8 wks) — Noble to Benjamin.\n• Healing & thought → Decolonizing the Mind (10 wks).\n\nAll curricula download from the Academy ↑. Every download feeds the Treasury 0.05 POL — learning literally funds the movement.';
+ if(/family fund|overlook|justice|death|case/.test(s))return 'The Family Fund (The Overlooked section):\n\n• Pools POL for burial costs, legal fees, and investigations mainstream media abandoned.\n• 20% of all Commons Coin flows feed it automatically.\n• Families are verified by stewards; every disbursement is public on Polygon.\n\nTo honor a name, use "Report an Overlooked Case." To strengthen the fund, donate directly — the panel is in the Justice section ↑.';
+ if(/coin|token|commons/.test(s))return '$COMMONS on Polygon — the engine:\n\n• Fixed 21M supply. No inflation, no dilution.\n• Allocation: 40% Treasury · 25% Education · 20% Family Fund · 15% Builders.\n• Governance is 1 member, 1 vote — whales can\'t buy the movement.\n\nEvery Market purchase and Academy download flows through it. Holding it = holding a share of the mission.';
+ if(/market|sell|vendor|business/.test(s))return 'Marketplace fast-track:\n\n1. Register in the Sovereign Registry (verified wallet).\n2. Ask me to draft your vendor profile — tell me what you sell.\n3. Stewards verify within days; you list with the ✓ Verified badge.\n4. Accept POL + $COMMONS. 5% treasury tithe keeps the lights on for everyone.\n\nSix founding vendors are live in the Market section ↑ — study how they present.';
+ if(/treasury|donate|fund|money/.test(s))return 'Treasury in one breath: ◎'+treasury.toLocaleString('en-US',{minimumFractionDigits:2})+' POL held in community multisig on Polygon. Donate 5/25/100 POL in the Academy panel; downloads auto-add 0.05 POL; $COMMONS streams 40% here forever. No middlemen, no gatekeepers.';
+ if(/identity|status|negro|indigenous|african american|label|name/.test(s))return 'Identity & Status track (see the Ledger\'s closing note):\n\n• Study how classification was imposed through law and census — evidence first, always.\n• The Academy\'s Black Economics path builds the legal-literacy foundation.\n• Document your lineage; stewards can guide record correction.\n\nNames assigned under a system of property can be retired with knowledge and paperwork. Start with the reading path — I\'ll check in on you.';
+ if(/task|impossible|plan|help me do|how do i/.test(s))return 'Genius breakdown protocol:\n\n1. Name the outcome in one sentence.\n2. I split it into 3 moves: this week, this month, this quarter.\n3. Each move gets a lane (Builder / Educator / Funder / Artist / Organizer / Strategist) and a collaborator from the Registry.\n\nTry me: "Plan a study circle launch" or "Plan my vendor launch" — I\'ll cut it to size.';
+ if(/study circle/.test(s))return 'Study circle launch, cut to size:\n\n• THIS WEEK — pick one Academy guide (Black Economics is the crowd favorite), download the curriculum, invite 5 people.\n• THIS MONTH — meet weekly, post reflections to your hub thread, log attendance as a steward.\n• THIS QUARTER — graduate the circle into a Marketplace vendor or a Ledger documentation project.\n\n44 circles are already running. Yours is #45.';
+ if(/thank|peace|hello|hi |hey/.test(s))return 'Peace. The ancestors built with less and won more. Ask me for a plan, a path, a collaborator, or a breakdown — that is what I am for.';
+ return 'I hear you. Genius mode engages best with a target — try:\n\n• "Plan …" → I break any goal into weekly moves\n• "Find collaborators" → registry matchmaking\n• "Which study path?" → personalized curriculum\n• Ledger / Justice / Market / Coin / Treasury → deep explanations\n\nWhat impossible thing are we making easy today?';
+}
+refreshFund();
+</script>
+</body>
+</html>
