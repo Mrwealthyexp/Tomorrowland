@@ -658,7 +658,7 @@ blockquote.pull cite{display:block;font-family:var(--sans);font-style:normal;fon
     <div>
       <div class="logo">TOMORROW<span>LAND</span></div>
       <p class="small" style="max-width:320px;margin-top:10px">A demonstration of cooperative digital infrastructure. Built with respect for those who came before, and in debt to those who come after.</p>
-      <p class="small" style="max-width:320px;margin-top:10px">This is a front-end demonstration: wallet connections, transactions, and on-chain records are simulated in-browser. No real funds move; no data leaves your machine.</p>
+      <p class="small" style="max-width:320px;margin-top:10px">This is a front-end demonstration. If an injected wallet (MetaMask, etc.) is available, badge checks and mint transactions use real on-chain calls on Polygon. Without a wallet provider, demo connections and mints stay simulated in-browser.</p>
     </div>
     <div class="small">
       <p style="margin-bottom:8px"><a href="#pioneers">Pioneers</a> · <a href="#registry">Registry</a> · <a href="#badge">Badge</a> · <a href="#lanes">Lanes</a></p>
@@ -685,7 +685,7 @@ blockquote.pull cite{display:block;font-family:var(--sans);font-style:normal;fon
 <div class="modal-bg" id="walletModal">
   <div class="modal">
     <h3>Connect Wallet</h3>
-    <p>Choose a provider. This demo simulates the connection.</p>
+    <p>Choose a provider. If an injected wallet is available, Tomorrowland will request a real wallet connection; otherwise it uses a local demo simulation.</p>
     <button class="wopt" data-w="MetaMask"><b>🦊</b> MetaMask</button>
     <button class="wopt" data-w="WalletConnect"><b>🔗</b> WalletConnect</button>
     <button class="wopt" data-w="Coinbase Wallet"><b>🔵</b> Coinbase Wallet</button>
@@ -870,11 +870,29 @@ const isAddr=a=>/^0x[0-9a-fA-F]{40}$/.test(a);
 $('#walletBtn').addEventListener('click',()=>$('#walletModal').classList.add('open'));
 $('#wmClose').addEventListener('click',()=>$('#walletModal').classList.remove('open'));
 $('#walletModal').addEventListener('click',e=>{if(e.target.id==='walletModal')e.target.classList.remove('open')});
-$$('.wopt').forEach(b=>b.addEventListener('click',()=>{
+$$('.wopt').forEach(b=>b.addEventListener('click',async()=>{
+  const hasInjected=typeof window!=='undefined'&&!!window.ethereum;
+  if(hasInjected){
+    try{
+      const accs=await window.ethereum.request({method:'eth_requestAccounts'});
+      if(!accs||!accs.length)throw new Error('No wallet account returned.');
+      wallet=accs[0];
+      $('#walletBtn').textContent=wallet.slice(0,6)+'…'+wallet.slice(-4);
+      $('#walletModal').classList.remove('open');
+      toast(`Connected wallet: ${wallet.slice(0,10)}…`);
+      if(!$('#regAddr').value)$('#regAddr').value=wallet;
+      refreshBadgeState();
+      return;
+    }catch(e){
+      const msg=e&&e.code===4001?'Wallet connection was rejected.':'Wallet connection failed: '+(e&&e.message||e);
+      toast(msg,1);
+      return;
+    }
+  }
   const hex='0123456789abcdef';let a='0x';for(let i=0;i<40;i++)a+=hex[Math.floor(Math.random()*16)];
   wallet=a; $('#walletBtn').textContent=a.slice(0,6)+'…'+a.slice(-4);
   $('#walletModal').classList.remove('open');
-  toast(`Connected via ${b.dataset.w}: ${a.slice(0,10)}…`);
+  toast(`Demo wallet via ${b.dataset.w}: ${a.slice(0,10)}…`);
   if(!$('#regAddr').value)$('#regAddr').value=a;
   refreshBadgeState();
 }));
@@ -1061,21 +1079,49 @@ $('#resetDemo').addEventListener('click',()=>{
 });
 
 /* ============ BUILDER BADGE NFT ============ */
-const NFT_CONTRACT_ADDRESS='0x0000000000000000000000000000000000000000'; // TODO: set after deployment
+const NFT_CONTRACT_ADDRESS='0x0000000000000000000000000000000000000000'; // TODO: set your deployed BuilderBadge contract address
 const ZERO_ADDR='0x0000000000000000000000000000000000000000';
-// Minimal ABI selectors (keccak256 first-4-bytes, precomputed):
-// safeMint(address)=0x6a033842  mint()=0x1249c58b  balanceOf(address)=0x70a08231
-// totalSupply()=0x18160ddd    tokenOfOwnerByIndex(address,uint256)=0x2f745c59
-const SEL={safeMint:'0x6a033842',mint:'0x1249c58b',balanceOf:'0x70a08231',totalSupply:'0x18160ddd',tokenOfOwnerByIndex:'0x2f745c59'};
+const POLYGON_CHAIN_ID_HEX='0x89'; // 137
+const BADGE_ABI=[
+  {name:'safeMint',inputs:['address']},
+  {name:'balanceOf',inputs:['address']},
+  {name:'totalSupply',inputs:[]},
+  {name:'tokenOfOwnerByIndex',inputs:['address','uint256']}
+];
+// precomputed function selectors from BADGE_ABI signatures
+const BADGE_SEL={safeMint:'0x40d097c3',balanceOf:'0x70a08231',totalSupply:'0x18160ddd',tokenOfOwnerByIndex:'0x2f745c59'};
 const pad32=v=>v.toString(16).replace(/^0x/,'').padStart(64,'0');
 const encAddr=a=>a.toLowerCase().replace(/^0x/,'').padStart(64,'0');
 const contractLive=NFT_CONTRACT_ADDRESS.toLowerCase()!==ZERO_ADDR;
 const hasEth=()=>typeof window!=='undefined'&&!!window.ethereum;
 let badgeOwned=false, simSupply=137, simTokenId=null;
+const encodeBadgeCall=(fn,args=[])=>{
+  if(fn==='safeMint'||fn==='balanceOf')return BADGE_SEL[fn]+encAddr(args[0]);
+  if(fn==='totalSupply')return BADGE_SEL.totalSupply;
+  if(fn==='tokenOfOwnerByIndex')return BADGE_SEL.tokenOfOwnerByIndex+encAddr(args[0])+pad32(BigInt(args[1]||0));
+  throw new Error('Unsupported ABI call: '+fn);
+};
 async function ethCall(data){
   const res=await window.ethereum.request({method:'eth_call',params:[{to:NFT_CONTRACT_ADDRESS,data},'latest']});
   if(!res||res==='0x')throw new Error('empty');
   return BigInt(res);
+}
+async function getChainId(){
+  if(!hasEth())return null;
+  return window.ethereum.request({method:'eth_chainId'});
+}
+async function ensurePolygonMainnet(){
+  if(!hasEth())return false;
+  const chainId=await getChainId();
+  if(chainId===POLYGON_CHAIN_ID_HEX)return true;
+  try{
+    await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:POLYGON_CHAIN_ID_HEX}]});
+    return true;
+  }catch(e){
+    if(e&&e.code===4001)throw new Error('Please approve switching to Polygon Mainnet (137) in your wallet.');
+    if(e&&e.code===4902)throw new Error('Polygon Mainnet is missing in your wallet. Add chain ID 137, then retry.');
+    throw new Error('Could not switch to Polygon Mainnet (137).');
+  }
 }
 async function refreshBadgeState(){
   const btn=$('#mintBadgeBtn'),st=$('#badgeStatus'),sup=$('#badgeSupply');
@@ -1088,14 +1134,18 @@ async function refreshBadgeState(){
   }
   if(!wallet){btn.textContent='Connect to Mint'; st.textContent='Connect your wallet to check badge status.';}
   else{btn.textContent='Mint Builder Badge'; st.textContent='No badge on this wallet yet — claim yours.';}
+  const onPolygon=hasEth()?await getChainId()===POLYGON_CHAIN_ID_HEX:false;
+  if(wallet&&hasEth()&&!onPolygon){
+    st.textContent='Switch your wallet to Polygon Mainnet (chain ID 137) to check and mint your badge.';
+  }
   // Ownership + supply
-  if(wallet&&hasEth()){
+  if(wallet&&hasEth()&&onPolygon){
     try{
-      const bal=await ethCall(SEL.balanceOf+encAddr(wallet));
+      const bal=await ethCall(encodeBadgeCall('balanceOf',[wallet]));
       if(bal>0n){
         badgeOwned=true; btn.disabled=true; btn.textContent='Badge Minted ✓';
         let tok='';
-        try{const id=await ethCall(SEL.tokenOfOwnerByIndex+encAddr(wallet)+pad32(0n)); tok=` Token ID: #${id}.`;}catch(e){}
+        try{const id=await ethCall(encodeBadgeCall('tokenOfOwnerByIndex',[wallet,0])); tok=` Token ID: #${id}.`;}catch(e){}
         st.innerHTML=`Badge held by this wallet.${tok} <a href="https://polygonscan.com/token/${NFT_CONTRACT_ADDRESS}?a=${wallet}" target="_blank" rel="noopener">View your badges on Polygonscan ↗</a>`;
       }
     }catch(e){/* keep default mint state */}
@@ -1104,12 +1154,12 @@ async function refreshBadgeState(){
     st.innerHTML=`Badge held by this wallet (simulated). Token ID: #${simTokenId}.`;
   }
   try{
-    const n=hasEth()?await ethCall(SEL.totalSupply):BigInt(simSupply);
+    const n=(hasEth()&&onPolygon)?await ethCall(encodeBadgeCall('totalSupply')):BigInt(simSupply);
     sup.textContent=n.toString()+' badges minted so far';
   }catch(e){sup.textContent=simSupply+' badges minted so far (preview)'} // silently skip if not exposed
 }
-async function sendMintTx(selectorData){
-  const tx={from:wallet,to:NFT_CONTRACT_ADDRESS,data:selectorData};
+async function sendMintTx(data){
+  const tx={from:wallet,to:NFT_CONTRACT_ADDRESS,data};
   return window.ethereum.request({method:'eth_sendTransaction',params:[tx]});
 }
 function waitReceipt(hash,tries){
@@ -1132,13 +1182,9 @@ $('#mintBadgeBtn').addEventListener('click',async()=>{
   const btn=$('#mintBadgeBtn'); btn.disabled=true;
   if(hasEth()){
     try{
+      await ensurePolygonMainnet();
       toast('Confirm the mint in your wallet…');
-      let hash;
-      try{hash=await sendMintTx(SEL.safeMint+encAddr(wallet));}
-      catch(e1){
-        if(e1&&(e1.code===4001))throw e1; // user rejected — don't retry
-        try{hash=await sendMintTx(SEL.mint);}catch(e2){throw e2;}
-      }
+      const hash=await sendMintTx(encodeBadgeCall('safeMint',[wallet]));
       toast('Mint pending…');
       const t=$('#toasts').lastChild; t.innerHTML=`Mint pending… <a href="https://polygonscan.com/tx/${hash}" target="_blank" rel="noopener" style="color:var(--gold2)">view on Polygonscan ↗</a>`;
       const ok=await waitReceipt(hash);
@@ -1163,6 +1209,7 @@ $('#mintBadgeBtn').addEventListener('click',async()=>{
 });
 // Refresh on account switch / disconnect (real wallets)
 if(hasEth()&&window.ethereum.on){
+  window.ethereum.on('chainChanged',()=>refreshBadgeState());
   window.ethereum.on('accountsChanged',accs=>{
     if(accs&&accs.length){wallet=accs[0];$('#walletBtn').textContent=wallet.slice(0,6)+'…'+wallet.slice(-4);toast('Account switched: '+wallet.slice(0,10)+'…');}
     else{wallet=null;$('#walletBtn').textContent='Connect Wallet';toast('Wallet disconnected.');}
